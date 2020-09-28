@@ -3,8 +3,8 @@ package searchbook
 import (
 	"database/sql"
 	"strings"
-	stct "online_library/structs"
-	dbconfig "online_library/config"
+	stct "github.com/Fifanon/online_library/structs"
+	dbconfig "github.com/Fifanon/online_library/config"
 
 )
 

@@ -2,13 +2,13 @@ package user
 
 import (
 	"database/sql"
-	s "online_library/session"
-	"online_library/modules/github.com/gorilla/securecookie"
-	vars "online_library/varsAndFuncs"
-	stct "online_library/structs"
+	s "github.com/Fifanon/online_library/session"
+	"github.com/gorilla/securecookie"
+	vars "github.com/Fifanon/online_library/varsAndFuncs"
+	stct "github.com/Fifanon/online_library/structs"
 	"net/http"
-	dbconfig "online_library/config"
-	"online_library/modules/golang.org/x/crypto/bcrypt"
+	dbconfig "github.com/Fifanon/online_library/config"
+	"golang.org/x/crypto/bcrypt"
 )
 var cookieHandler = securecookie.New(
     securecookie.GenerateRandomKey(64),

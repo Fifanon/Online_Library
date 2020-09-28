@@ -1,11 +1,11 @@
 package displaybk
 
 import(
-	vars "online_library/varsAndFuncs"
-	stct "online_library/structs"
+	vars "github.com/Fifanon/online_library/varsAndFuncs"
+	stct "github.com/Fifanon/online_library/structs"
 	"net/http"
-	dbconfig "online_library/config"
-	s "online_library/session"
+	dbconfig "github.com/Fifanon/online_library/config"
+	s "github.com/Fifanon/online_library/session"
 
 )
 

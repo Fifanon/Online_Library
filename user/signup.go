@@ -5,14 +5,13 @@ import (
 	"encoding/json"
 	"io/ioutil"
 	"io"
-	"fmt"
 	"os"
 	"strings"
-	vars "online_library/varsAndFuncs"
-	stct "online_library/structs"
+	vars "github.com/Fifanon/online_library/varsAndFuncs"
+	stct "github.com/Fifanon/online_library/structs"
 	"net/http"
-	dbconfig "online_library/config"
-	"online_library/modules/golang.org/x/crypto/bcrypt"
+	dbconfig "github.com/Fifanon/online_library/config"
+	"golang.org/x/crypto/bcrypt"
 )
 //EmailStruct **
 type emailStruct struct{
@@ -41,7 +40,6 @@ func SignupProcessor(w http.ResponseWriter, r *http.Request) {
 		panic(err)
 	}
 	stct.User.Password = string(hash)
-    fmt.Println(stct.User.Password)
 
 	temp, err := db.Prepare(`insert into temporary_members (mb_firster,mb_laster,mb_email,mb_address,mb_tel,mb_pwd,m_status,m_photo)
             values(?,?,?,?,?,?,?,?);`)

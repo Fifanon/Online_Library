@@ -1,12 +1,12 @@
 package member
 
 import(
-	"online_library/modules/github.com/gorilla/mux"
-	s "online_library/session"
-	vars "online_library/varsAndFuncs"
-	stct "online_library/structs"
+	"github.com/gorilla/mux"
+	s "github.com/Fifanon/online_library/session"
+	vars "github.com/Fifanon/online_library/varsAndFuncs"
+	stct "github.com/Fifanon/online_library/structs"
 	"net/http"
-	dbconfig "online_library/config"
+	dbconfig "github.com/Fifanon/online_library/config"
 )
 
 //CancelMember **

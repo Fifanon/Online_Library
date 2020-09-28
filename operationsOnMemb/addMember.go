@@ -3,11 +3,11 @@ package member
 import (
 	"net/http"
 
-	"online_library/modules/github.com/gorilla/mux"
-	dbconfig "online_library/config"
-	stct "online_library/structs"
-	vars "online_library/varsAndFuncs"
-	s "online_library/session"
+	"github.com/gorilla/mux"
+	dbconfig "github.com/Fifanon/online_library/config"
+	stct "github.com/Fifanon/online_library/structs"
+	vars "github.com/Fifanon/online_library/varsAndFuncs"
+	s "github.com/Fifanon/online_library/session"
 )
 
 var tmpMembers []stct.Users

@@ -2,9 +2,9 @@ package session
 
 import (
     "net/http"
-    "online_library/modules/github.com/gorilla/securecookie"
-    stct "online_library/structs"
-    vars "online_library/varsAndFuncs"
+    "github.com/gorilla/securecookie"
+    stct "github.com/Fifanon/online_library/structs"
+    vars "github.com/Fifanon/online_library/varsAndFuncs"
 )
 var cookieHandler = securecookie.New(
     securecookie.GenerateRandomKey(64),

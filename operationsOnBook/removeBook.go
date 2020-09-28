@@ -2,13 +2,13 @@ package bkop
 
 import(
     "strconv"
-	"online_library/modules/github.com/gorilla/mux"
-	vars "online_library/varsAndFuncs"
-	stct "online_library/structs"
+	"github.com/gorilla/mux"
+	vars "github.com/Fifanon/online_library/varsAndFuncs"
+	stct "github.com/Fifanon/online_library/structs"
 	"net/http"
-	dbconfig "online_library/config"
-	searchbk "online_library/searchBook"
-	s "online_library/session"
+	dbconfig "github.com/Fifanon/online_library/config"
+	searchbk "github.com/Fifanon/online_library/searchBook"
+	s "github.com/Fifanon/online_library/session"
 
 )
 

@@ -3,10 +3,10 @@ package member
 import (
 	"net/http"
 
-	dbconfig "online_library/config"
-	stct "online_library/structs"
-	vars "online_library/varsAndFuncs"
-	s "online_library/session"
+	dbconfig "github.com/Fifanon/online_library/config"
+	stct "github.com/Fifanon/online_library/structs"
+	vars "github.com/Fifanon/online_library/varsAndFuncs"
+	s "github.com/Fifanon/online_library/session"
 
 )
 
