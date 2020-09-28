@@ -1,0 +1,6 @@
+@media (max-width: 575.98px) {
+    .op a:before {
+        content: "\A";
+        white-space: pre;
+    }
+}

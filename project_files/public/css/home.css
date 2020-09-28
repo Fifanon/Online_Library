@@ -1,0 +1,85 @@
+.description {
+    height: 22em;
+    left: 50%;
+    position: absolute;
+    top: 45%;
+    transform: translate(-50%, -55%);
+    text-align: center;
+}
+
+.description p {
+    font-family: 'Times New Roman';
+    color: rgb(217, 227, 236);
+    font-size: 1.3rem;
+}
+
+.login,
+.welcome {
+    font-size: 1.9em;
+    font-weight: bold;
+    background: rgba(0, 0, 0, 0);
+    color: rgb(217, 227, 236);
+}
+
+.login {
+    font-size: 1.7em;
+}
+
+.space {
+    height: 8em;
+}
+
+.testimonials-header {
+    height: 6em;
+    width: 100%;
+    background: #f3efef;
+    margin-top: 16em;
+}
+
+.testimonials-header p {
+    color: black;
+    font-family: impact;
+    font-weight: bold;
+    font-size: 2.5em;
+    padding-top: 1em;
+    text-align: center;
+}
+
+.testimonials-header p mark {
+    background-color: #f3efef;
+}
+
+.form-wrapper {
+    position: absolute;
+    width: 82%;
+    left: 9%;
+    right: 9%;
+    margin-top: -10em;
+}
+
+@media (max-width: 575.98px) {
+    .description {
+        left: 0;
+        padding: 15px;
+        position: absolute;
+        top: 15%;
+        transform: none;
+        text-align: center;
+    }
+    .description p {
+        font-size: 1rem;
+    }
+    .features {
+        margin: 0;
+    }
+    .testimonials-header {
+        height: 4em;
+    }
+    .testimonials-header p {
+        font-size: 30px;
+    }
+    .welcome {
+        font-size: 1.5em;
+        padding: 1em 0px;
+    }
+}

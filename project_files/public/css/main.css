@@ -1,0 +1,111 @@
+    body {
+        padding: 0;
+        margin: 0;
+        background: #f3efef;
+    }
+    /*--- navigation bar ---*/
+    
+    .navbar {
+        background: #1C2331;
+        height: 4em;
+    }
+    
+    .navbar-nav {
+        padding-right: 5.5%;
+        height: 4em;
+    }
+    
+    .nav-link {
+        color: #fff;
+        cursor: pointer;
+    }
+    
+    .navbar-toggler {
+        border: 0;
+    }
+    
+    .navbar-nav .nav-item .nav-link {
+        height: 4em;
+        color: white;
+        padding-top: 1em;
+    }
+    
+    .navbar-nav .nav-item .nav-link:hover {
+        background-color: dodgerblue;
+    }
+    
+    .navbar-collapse {
+        justify-content: flex-end;
+        height: 10em;
+        margin-top: 0px;
+    }
+    
+    .header {
+        background-image: url('../img/library.jpg');
+        background-size: cover;
+        background-position: center;
+        position: relative;
+    }
+    
+    .overlay {
+        position: absolute;
+        min-height: 100%;
+        min-width: 100%;
+        left: 0;
+        top: 0;
+        background: rgba(0, 0, 0, 0.5);
+    }
+    
+    .logo {
+        font-family: fantasy;
+        font-weight: bold;
+        font-style: italic;
+        font-size: 2em;
+    }
+    
+    .logo a {
+        margin: auto;
+        font-size: 30px;
+    }
+    
+    .blue {
+        background-color: #1C2331;
+        color: dodgerblue;
+        padding-right: 0px;
+    }
+    
+    .btn-outline-light:focus {
+        outline: none !important;
+        box-shadow: inset 0 -1px 0 #ddd;
+    }
+    
+    .page-footer {
+        position: relative;
+        background-color: #1C2331;
+        color: #ccc;
+        padding: 60px 0 30px;
+    }
+    
+    .footer-copyright {
+        color: #666;
+        padding: 40px 0;
+    }
+    
+    .mr-3 {
+        color: white
+    }
+    
+    .page-footer,
+    .top-nav-collapse {
+        background-color: #1C2331;
+    }
+    
+    @media (max-width: 575.98px) {
+        .navbar {
+            background: #1C2331;
+        }
+        .navbar-collapse {
+            background-color: #1C2331;
+            margin-top: 0px;
+        }
+    }
