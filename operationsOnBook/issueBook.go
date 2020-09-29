@@ -79,3 +79,30 @@ func SuccIssueBook(w http.ResponseWriter, r *http.Request) {
 		}
 		http.Redirect(w, r, "/sci-library/librarian/operations/issue-book", http.StatusSeeOther)
 }
+
+
+
+//DeleteBookRequest **
+func DeleteBookRequest(w http.ResponseWriter, r *http.Request) {
+	if	validated := s.GetSession(r);!validated{
+		http.Redirect(w, r, "/home", http.StatusSeeOther)
+		return
+	}
+		params := mux.Vars(r)
+		email := params["email"]
+		isbn := params["isbn"]
+
+		r.ParseForm()
+
+		db, err := dbconfig.GetMySQLDb()
+		if err != nil {
+			panic(err)
+		}
+		_, err = db.Query(`delete from tmp_borrow where mb_email = ? and bk_isbn = ?;`, email, isbn)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		db.Close()
+		http.Redirect(w, r, "/sci-library/librarian/operations/issue-book", http.StatusSeeOther)
+}

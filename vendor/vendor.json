@@ -1,0 +1,43 @@
+{
+	"comment": "",
+	"ignore": "test",
+	"package": [
+		{
+			"checksumSHA1": "9XFMria7gp9k7313bhkscH/qkrg=",
+			"path": "github.com/go-sql-driver/mysql",
+			"revision": "46351a8892976898935f653f5333782579a96fa5",
+			"revisionTime": "2020-08-18T11:12:13Z"
+		},
+		{
+			"checksumSHA1": "ky/3NljRwMf4Yj8Do7TiDIC+TEU=",
+			"path": "github.com/gorilla/mux",
+			"revision": "d07530f46e1eec4e40346e24af34dcc6750ad39f",
+			"revisionTime": "2020-09-12T19:20:56Z"
+		},
+		{
+			"checksumSHA1": "Q+4Ot9TwKWoifPlLC6o1ZXCbMNY=",
+			"path": "github.com/gorilla/securecookie",
+			"revision": "f37875ef1fb538320ab97fc6c9927d94c280ed5b",
+			"revisionTime": "2020-09-12T19:29:11Z"
+		},
+		{
+			"checksumSHA1": "dMEqtSgowJ+5MdVbO5Rh5UsXgHg=",
+			"path": "github.com/gorilla/sessions",
+			"revision": "9cb0b0a3e38d07f41143f03013eaf0a3243fb474",
+			"revisionTime": "2020-09-12T19:25:02Z"
+		},
+		{
+			"checksumSHA1": "oCH3J96RWvO8W4xjix47PModpio=",
+			"path": "golang.org/x/crypto/bcrypt",
+			"revision": "5c72a883971a4325f8c62bf07b6d38c20ea47a6a",
+			"revisionTime": "2020-08-19T18:45:41Z"
+		},
+		{
+			"checksumSHA1": "q+XI9g44wd9mYvf3S5Wo8YZjAus=",
+			"path": "golang.org/x/crypto/blowfish",
+			"revision": "5c72a883971a4325f8c62bf07b6d38c20ea47a6a",
+			"revisionTime": "2020-08-19T18:45:41Z"
+		}
+	],
+	"rootPath": "github.com/Fifanon/online_library"
+}

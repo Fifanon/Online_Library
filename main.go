@@ -50,6 +50,7 @@ func main() {
 
 	r.HandleFunc("/sci-library/librarian/op/issue-book/{isbn}/{email}", bk.SuccIssueBook)
 	r.HandleFunc("/sci-library/librarian/operations/issue-book", bk.IssuedBook)
+	r.HandleFunc("/sci-library/librarian/op/issue-book/deny-borrow/{isbn}/{email}", bk.DeleteBookRequest)
 	r.HandleFunc("/sci-library/member/list-books-borrowed", bk.ListOfBooksBorrowed)
 
 	r.HandleFunc("/sci-library/librarian/operations/add-book", bk.AddBook)
@@ -89,7 +90,7 @@ func main() {
 }
 
 func init() {
-	vars.Tpl = template.Must(template.ParseGlob("./project_files/templates/*.html"))
+	vars.Tpl = template.Must(template.ParseGlob("./templates/*.html"))
 }
 //rendering home page
 func handler(w http.ResponseWriter, r *http.Request) {

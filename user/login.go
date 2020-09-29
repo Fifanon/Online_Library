@@ -64,7 +64,7 @@ func LoginProcessor (w http.ResponseWriter, r *http.Request) {
 	http.Redirect(w, r, redirectTarget, http.StatusSeeOther)	
 }
 
-//memberLoggedIn **
+//MemberLoggedIn **
 func MemberLoggedIn(w http.ResponseWriter, r *http.Request) {
 	if	validated := s.GetSession(r);!validated{
 		http.Redirect(w, r, "/home", http.StatusSeeOther)
