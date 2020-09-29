@@ -1,1 +1,1 @@
-"web: bin/online_library" 
+web: bin/online_library
