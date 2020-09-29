@@ -4,6 +4,7 @@ import (
 	"html/template"
 	"database/sql"
 	"net/http"
+	"os"
 	"github.com/gorilla/mux"
 	"github.com/gorilla/sessions"
 	_"github.com/gorilla/securecookie"
@@ -86,7 +87,8 @@ func main() {
 	fs := http.FileServer(http.Dir("./project_files/"))
 	r.PathPrefix("/static/").Handler(http.StripPrefix("/static/", fs))
 
-	http.ListenAndServe(":9080", r)
+    port := os.Getenv("POST")
+	http.ListenAndServe(":" + port, r)
 }
 
 func init() {
