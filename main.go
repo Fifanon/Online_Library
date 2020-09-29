@@ -87,7 +87,7 @@ func main() {
 	fs := http.FileServer(http.Dir("./project_files/"))
 	r.PathPrefix("/static/").Handler(http.StripPrefix("/static/", fs))
 
-    port := os.Getenv("POST")
+    port := os.Getenv("PORT")
 	http.ListenAndServe(":" + port, r)
 }
 
