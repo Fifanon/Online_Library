@@ -1,10 +1,12 @@
 package main
 
 import (
+	"fmt"
 	"html/template"
 	"database/sql"
 	"net/http"
 	"os"
+	"github.com/joho/godotenv"
 	"github.com/gorilla/mux"
 	"github.com/gorilla/sessions"
 	_"github.com/gorilla/securecookie"
@@ -24,6 +26,12 @@ import (
 var db *sql.DB
 var store *sessions.CookieStore
 
+func init() {
+    // loads values from .env into the system
+    if err := godotenv.Load(); err != nil {
+        fmt.Println("No .env file found")
+    }
+}
 func main() {
 	vars.GotFile = false
 	r := mux.NewRouter()
@@ -87,7 +95,8 @@ func main() {
 	fs := http.FileServer(http.Dir("./project_files/"))
 	r.PathPrefix("/static/").Handler(http.StripPrefix("/static/", fs))
 
-    port := os.Getenv("PORT")
+	port := os.Getenv("PORT")
+	fmt.Println(port,"yeahh")
 	http.ListenAndServe(":" + port, r)
 }
 

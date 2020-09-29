@@ -27,6 +27,12 @@
 			"revisionTime": "2020-09-12T19:25:02Z"
 		},
 		{
+			"checksumSHA1": "bQvqcJ/mIQJ82bX4WB7JmykWe2s=",
+			"path": "github.com/joho/godotenv",
+			"revision": "d6ee6871f21dd95e76563a90f522ce9fe75443f8",
+			"revisionTime": "2020-03-01T20:46:15Z"
+		},
+		{
 			"checksumSHA1": "oCH3J96RWvO8W4xjix47PModpio=",
 			"path": "golang.org/x/crypto/bcrypt",
 			"revision": "5c72a883971a4325f8c62bf07b6d38c20ea47a6a",
