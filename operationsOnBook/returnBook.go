@@ -68,6 +68,7 @@ func ReturnBookMemberSearch(w http.ResponseWriter, r *http.Request) {
 		if len(booknBorrs) == 0{
 			stct.Msg.BookExistsNot = "member has not borrowed any book"
 			vars.Tpl.ExecuteTemplate(w, "bookReturning.html", stct.Msg)
+			stct.Msg.BookExistsNot = ""
 		}
 		db.Close()
 		vars.Tpl.ExecuteTemplate(w, "booksToReturn.html", booknBorrs)

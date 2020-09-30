@@ -2,14 +2,18 @@ package bkop
 
 import(
 	"time"
+	"fmt"
 	"github.com/gorilla/mux"
 	vars "github.com/Fifanon/online_library/varsAndFuncs"
 	stct "github.com/Fifanon/online_library/structs"
 	"net/http"
 	dbconfig "github.com/Fifanon/online_library/config"
 	s "github.com/Fifanon/online_library/session"
+	gomail "github.com/Fifanon/online_library/gomail"
 
 )
+var bookndMem stct.BorrowInfo
+
 
 //IssuedBook **
 func IssuedBook(w http.ResponseWriter, r *http.Request) {
@@ -27,7 +31,6 @@ func IssuedBook(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			panic(err)
 		}
-		var bookndMem stct.BorrowInfo
 		bookndMembs := []stct.BorrowInfo{}
 		for qr.Next() {
 			err = qr.Scan(&bookndMem.ISBN, &bookndMem.Title, &bookndMem.Author, &bookndMem.Pages, &bookndMem.Subject,
@@ -77,6 +80,21 @@ func SuccIssueBook(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			panic(err)
 		}
+		qr, err := db.Query(`select book_isbn,book_title,author_name book_instances
+		where book_isbn = ?;`, isbn)
+        if err != nil {
+           panic(err)
+        }
+        for qr.Next() {
+            err = qr.Scan(&bookndMem.ISBN, &bookndMem.Title, &bookndMem.Author)
+            if err != nil {
+               panic(err)
+            }
+		}
+		db.Close() 
+		subject := "REGISTRATION CONFIRMATION"
+		emailBody := fmt.Sprintf("You have been issued the book %s (%d) by %s.\n It is required that you return it in 2 weeks time.\n If deadline passed, you will have to pay $5 charge.\n", bookndMem.Title,bookndMem.ISBN, bookndMem.Author)
+		gomail.SendEmail(email,emailBody, subject)
 		http.Redirect(w, r, "/sci-library/librarian/operations/issue-book", http.StatusSeeOther)
 }
 
@@ -103,6 +121,20 @@ func DeleteBookRequest(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
+		qr, err := db.Query(`select book_isbn,book_title,author_name from book_instances where book_isbn = ?;`, isbn)
+        if err != nil {
+           panic(err)
+        }
+        for qr.Next() {
+            err = qr.Scan(&bookndMem.ISBN, &bookndMem.Title, &bookndMem.Author)
+            if err != nil {
+               panic(err)
+            }
+		}
 		db.Close()
+
+		subject := "REGISTRATION REJECTED"
+		emailBody := fmt.Sprintf("You borrow of the book %s (%d) by %s has been rejected. Contact the librarian on fifanonlesley@gmail to inquire about the reasons.\n", bookndMem.Title,bookndMem.ISBN, bookndMem.Author)
+		gomail.SendEmail("fifanonlesley@gmail.com",emailBody, subject)
 		http.Redirect(w, r, "/sci-library/librarian/operations/issue-book", http.StatusSeeOther)
 }

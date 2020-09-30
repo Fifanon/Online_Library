@@ -96,7 +96,6 @@ func main() {
 	r.PathPrefix("/static/").Handler(http.StripPrefix("/static/", fs))
 
 	port := os.Getenv("PORT")
-	fmt.Println(port,"yeahh")
 	http.ListenAndServe(":" + port, r)
 }
 
