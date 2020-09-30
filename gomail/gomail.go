@@ -1,8 +1,8 @@
 package gomail
 
 import (
-   "fmt"
-   "net/smtp"
+	"net/smtp"
+	"os"
 )
 
 // smtpServer data to smtp server.
@@ -20,7 +20,7 @@ func (s *smtpServer) Address() string {
 func SendEmail(toEmail string, msg string, subj string) (done bool, err error){
 	// Sender data.
 	from := "scilibrary6@gmail.com"
-	password := "zxcasd,.23"
+	password := os.Getenv("PASSWORD")
 
 	// Receiver email address.
 	to := []string{toEmail}
@@ -39,11 +39,9 @@ func SendEmail(toEmail string, msg string, subj string) (done bool, err error){
 	// Sending email.
 	err = smtp.SendMail(smtpServer.Address(), auth, from, to, message)
 	if err != nil {
-		fmt.Println(err)
 		return false, err
 	}
 		
-	fmt.Println("Email Sent!")
 	return true, nil
 }
 

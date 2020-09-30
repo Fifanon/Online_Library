@@ -26,12 +26,6 @@ import (
 var db *sql.DB
 var store *sessions.CookieStore
 
-func init() {
-    // loads values from .env into the system
-    if err := godotenv.Load(); err != nil {
-        fmt.Println("No .env file found")
-    }
-}
 func main() {
 	vars.GotFile = false
 	r := mux.NewRouter()
@@ -101,6 +95,10 @@ func main() {
 
 func init() {
 	vars.Tpl = template.Must(template.ParseGlob("./templates/*.html"))
+
+	if err := godotenv.Load(); err != nil {
+        fmt.Println("No .env file found")
+    }
 }
 //rendering home page
 func handler(w http.ResponseWriter, r *http.Request) {

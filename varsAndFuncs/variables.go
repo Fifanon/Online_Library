@@ -10,4 +10,3 @@ var PhotoFilebytes []byte
 
 //var myuser users
 var Subject string
-var Email string

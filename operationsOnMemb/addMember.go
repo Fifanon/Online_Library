@@ -2,9 +2,10 @@ package member
 
 import (
 	"net/http"
-
+     "fmt"
 	"github.com/gorilla/mux"
 	dbconfig "github.com/Fifanon/online_library/config"
+	gomail "github.com/Fifanon/online_library/gomail"
 	stct "github.com/Fifanon/online_library/structs"
 	vars "github.com/Fifanon/online_library/varsAndFuncs"
 	s "github.com/Fifanon/online_library/session"
@@ -91,6 +92,12 @@ func AddMembervalidate(w http.ResponseWriter, r *http.Request) {
 			}
 			tmpMembers = append(tmpMembers, tmpMember)
 		}
+		subject := "REGISTRATION CONFIRMATION"
+		emailBody := fmt.Sprintf("Your registration at sci-library has been approved. click on the link below to login and get access to our great ressources.\n https://stormy-river-99671.herokuapp.com/home \n\n Regards.")
+		_, err = gomail.SendEmail(stct.User.Email,emailBody, subject)
+		if err != nil{
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+		}
 		vars.Tpl.ExecuteTemplate(w, "memberAdd.html", tmpMembers)
 		return
 }
@@ -115,5 +122,12 @@ func DeleteRequest(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		db.Close()
+		subject := "REGISTRATION REJECTED"
+		emailBody := fmt.Sprintf("Your registration at sci-library has been rejected. Contact the librarian at fifanonlesley@gmail to inquire about the reasons.\n")
+		_, err = gomail.SendEmail(stct.User.Email,emailBody, subject)
+		if err != nil{
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+		}
 		vars.Tpl.ExecuteTemplate(w, "memberAdd.html", tmpMembers)
+		return
 }

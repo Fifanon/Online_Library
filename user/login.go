@@ -1,6 +1,7 @@
 package user
 
 import (
+	"os"
 	"database/sql"
 	s "github.com/Fifanon/online_library/session"
 	"github.com/gorilla/securecookie"
@@ -49,7 +50,9 @@ func LoginProcessor (w http.ResponseWriter, r *http.Request) {
 		http.Redirect(w, r, "/home", http.StatusSeeOther)
 		return
 	}
-	vars.Email = stct.User.Email
+
+	os.Setenv("EMAIL",stct.User.Email)
+
 	status = r.Form.Get("status")
 	   //if user authenticated, set session
 	var redirectTarget string

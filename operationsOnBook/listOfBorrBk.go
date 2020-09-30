@@ -1,6 +1,7 @@
 package bkop
 
 import (
+	"os"
 	"net/http"
 	 "time"
 	 "strings"
@@ -31,10 +32,10 @@ func ListOfBooksBorrowed(w http.ResponseWriter, r *http.Request) {
 			panic(err)
 		}
 		qr,err := db.Query("")
-		if vars.Email == lbemail {
+		if os.Getenv("EMAIL") == lbemail {
 			qr, err = db.Query(`select book_isbn,book_title,author_name,pages,subject_area,number,b_imagename,fine,deadline,m_firstname,m_lastname,m_email,m_imagename from books_borrowed, book_instances,members where isbn = book_isbn and m_email = member_email;`)
 		}else{
-			qr, err = db.Query(`select book_isbn,book_title,author_name,pages,subject_area,number,b_imagename,fine,deadline,m_firstname,m_lastname,m_email,m_imagename from books_borrowed, book_instances,members where isbn = book_isbn and m_email = member_email and m_email = ?;`,vars.Email)
+			qr, err = db.Query(`select book_isbn,book_title,author_name,pages,subject_area,number,b_imagename,fine,deadline,m_firstname,m_lastname,m_email,m_imagename from books_borrowed, book_instances,members where isbn = book_isbn and m_email = member_email and m_email = ?;`,lbemail)
 		}
 		for qr.Next() {
 			err = qr.Scan(&bookMem.ISBN, &bookMem.Title, &bookMem.Author, &bookMem.Pages, &bookMem.Subject, &bookMem.Number, &bookMem.BookImageName, &bookMem.Fine, &bookMem.Deadline, &bookMem.FirstName, &bookMem.LastName, &bookMem.Email,&bookMem.ImageName)

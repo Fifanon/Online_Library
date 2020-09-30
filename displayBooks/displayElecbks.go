@@ -1,6 +1,7 @@
 package displaybk
 
 import(
+    "os"	  
 	vars "github.com/Fifanon/online_library/varsAndFuncs"
 	stct "github.com/Fifanon/online_library/structs"
 	"net/http"
@@ -101,7 +102,7 @@ func DisplayElecBooks(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			panic(err)
 		}
-		if vars.Email == lbemail {
+		if os.Getenv("EMAIL") == lbemail {
 			vars.Tpl.ExecuteTemplate(w, "booksElecEng.html", books)
 			return
 		}

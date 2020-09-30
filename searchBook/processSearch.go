@@ -1,6 +1,7 @@
 package searchbook
 
 import (
+	"os"
 	"net/http"
 	"strconv"
 	dbconfig "github.com/Fifanon/online_library/config"
@@ -37,7 +38,7 @@ func ProcessBookSearch(w http.ResponseWriter, r *http.Request) {
 		isbn, err := strconv.Atoi(search)
 		if err != nil {
 			stct.Msg.BookExistsNot = "Enter a valid Isbn"
-			if vars.Email == lbemail {
+			if os.Getenv("EMAIL") == lbemail {
 				vars.Tpl.ExecuteTemplate(w, "operations.html",stct.Msg)
 				stct.Msg.BookExistsNot = ""
 				return
@@ -56,14 +57,14 @@ func ProcessBookSearch(w http.ResponseWriter, r *http.Request) {
 	}
 	if !bkfound {
 		stct.Msg.BookExistsNot = "There is no record of such book"
-		if vars.Email == lbemail {
+		if os.Getenv("EMAIL") == lbemail {
 			http.Redirect(w, r, "/sci-library/librarian/operations", http.StatusSeeOther)
 			return
 		}
 		http.Redirect(w, r, "/sci-library/welcome", http.StatusSeeOther)
 		return
 	} 
-	if vars.Email == lbemail {
+	if os.Getenv("EMAIL") == lbemail {
 		vars.Tpl.ExecuteTemplate(w, "bookSearched.html", books)
 		return
 	}

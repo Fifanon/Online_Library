@@ -92,9 +92,12 @@ func SuccIssueBook(w http.ResponseWriter, r *http.Request) {
             }
 		}
 		db.Close() 
-		subject := "REGISTRATION CONFIRMATION"
+		subject := "BOOK ISSUING"
 		emailBody := fmt.Sprintf("You have been issued the book %s (%d) by %s.\n It is required that you return it in 2 weeks time.\n If deadline passed, you will have to pay $5 charge.\n", bookndMem.Title,bookndMem.ISBN, bookndMem.Author)
-		gomail.SendEmail(email,emailBody, subject)
+		_,err = gomail.SendEmail(email,emailBody, subject)
+		if err != nil{
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+		}
 		http.Redirect(w, r, "/sci-library/librarian/operations/issue-book", http.StatusSeeOther)
 }
 
@@ -133,8 +136,11 @@ func DeleteBookRequest(w http.ResponseWriter, r *http.Request) {
 		}
 		db.Close()
 
-		subject := "REGISTRATION REJECTED"
-		emailBody := fmt.Sprintf("You borrow of the book %s (%d) by %s has been rejected. Contact the librarian on fifanonlesley@gmail to inquire about the reasons.\n", bookndMem.Title,bookndMem.ISBN, bookndMem.Author)
-		gomail.SendEmail("fifanonlesley@gmail.com",emailBody, subject)
+		subject := "BOOK BORROW REJECTED"
+		emailBody := fmt.Sprintf("Your borrow of the book %s (%d) by %s, has been rejected. Contact the librarian on fifanonlesley@gmail to inquire about the reasons.\n", bookndMem.Title,bookndMem.ISBN, bookndMem.Author)
+		_, err = gomail.SendEmail(email,emailBody, subject)
+		if err != nil{
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+		}
 		http.Redirect(w, r, "/sci-library/librarian/operations/issue-book", http.StatusSeeOther)
 }

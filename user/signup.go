@@ -1,13 +1,14 @@
 package user
 
 import (
-
+    "fmt"
 	"encoding/json"
 	"io/ioutil"
 	"io"
 	"os"
 	"strings"
 	vars "github.com/Fifanon/online_library/varsAndFuncs"
+	gomail "github.com/Fifanon/online_library/gomail"
 	stct "github.com/Fifanon/online_library/structs"
 	"net/http"
 	dbconfig "github.com/Fifanon/online_library/config"
@@ -52,7 +53,14 @@ func SignupProcessor(w http.ResponseWriter, r *http.Request) {
 		panic(err)
 	}
 	db.Close()
+	subject := "NEW MEMBER TO ADD"
+	emailBody := fmt.Sprintf("New member to requesting registration.")
+	_, err = gomail.SendEmail(stct.User.Email,emailBody, subject)
+	if err != nil{
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+	}
 	vars.Tpl.ExecuteTemplate(w, "signupSucc.html", stct.User)
+	return
 }
 
 //UploadPhotoFile **

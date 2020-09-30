@@ -1,10 +1,10 @@
 package session
 
 import (
+    "os"
     "net/http"
     "github.com/gorilla/securecookie"
     stct "github.com/Fifanon/online_library/structs"
-    vars "github.com/Fifanon/online_library/varsAndFuncs"
 )
 var cookieHandler = securecookie.New(
     securecookie.GenerateRandomKey(64),
@@ -24,7 +24,7 @@ func GetSession(r *http.Request) (validated bool) {
         validated = false
         return validated
     }
-    if name != vars.Email{
+    if name != os.Getenv("EMAIL") {
         stct.Msg.LoginBefore = "Please fill the login form before you can assess"
         validated = false
         return validated
@@ -67,6 +67,6 @@ func ClearSession(response http.ResponseWriter) {
  //ClearSessionHandler **
 func ClearSessionHandler(response http.ResponseWriter, request *http.Request) {
     ClearSession(response)
-    vars.Email = ""
+    os.Unsetenv("EMAIL")
     http.Redirect(response, request, "/home", 302)
 }
