@@ -21,18 +21,18 @@ func AddMember(w http.ResponseWriter, r *http.Request) {
 	}
 		db, err := dbconfig.GetMySQLDb()
 		if err != nil {
-			panic(err)
+			http.Error(w, err.Error(), http.StatusInternalServerError)
 		}
 		qr, err := db.Query(`select * from temporary_members;`)
 		if err != nil {
-			panic(err)
+			http.Error(w, err.Error(), http.StatusInternalServerError)
 		}
 		var tmpMember stct.Users
 		tmpMembers := []stct.Users{}
 		for qr.Next() {
 			err = qr.Scan(&tmpMember.FirstName, &tmpMember.LastName, &tmpMember.Email, &tmpMember.Address, &tmpMember.PhoneNum, &tmpMember.Password, &tmpMember.Status, &tmpMember.ImageName)
 			if err != nil {
-				panic(err)
+				http.Error(w, err.Error(), http.StatusInternalServerError)
 			}
 			tmpMembers = append(tmpMembers, tmpMember)
 		}
@@ -54,41 +54,41 @@ func AddMembervalidate(w http.ResponseWriter, r *http.Request) {
 		email := params["email"]
 		db, err := dbconfig.GetMySQLDb()
 		if err != nil {
-			panic(err)
+			http.Error(w, err.Error(), http.StatusInternalServerError)
 		}
-		qr, err := db.Query(`select * from temporary_members where mb_email = ?;`, email)
+		qr, err := db.Query(`select * from temporary_members where mb_email = $1;`, email)
 		if err != nil {
-			panic(err)
+			http.Error(w, err.Error(), http.StatusInternalServerError)
 		}
 		var tmpMember stct.Users
 		for qr.Next() {
 			err = qr.Scan(&tmpMember.FirstName, &tmpMember.LastName, &tmpMember.Email, &tmpMember.Address, &tmpMember.PhoneNum, &tmpMember.Password, &tmpMember.Status, &tmpMember.ImageName)
 			if err != nil {
-				panic(err)
+				http.Error(w, err.Error(), http.StatusInternalServerError)
 			}
 		}
 		temp, err := db.Prepare(`insert into members (m_firstname,m_lastname,m_email,m_address,m_telephone,m_password,m_status,m_imagename,m_signuptime)
-              values(?,?,?,?,?,?,?,?,NOW());`)
+              values($1,$2,$2,$3,$4,$5,$6,$7,NOW());`)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
 		_, err = temp.Exec(&tmpMember.FirstName, &tmpMember.LastName, &tmpMember.Email, &tmpMember.Address, &tmpMember.PhoneNum, &tmpMember.Password, &tmpMember.Status, &tmpMember.ImageName)
 		if err != nil {
-			panic(err)
+			http.Error(w, err.Error(), http.StatusInternalServerError)
 		}
 		qr, err = db.Query(`delete from temporary_members where mb_email = ?;`, email)
 		if err != nil {
-			panic(err)
+			http.Error(w, err.Error(), http.StatusInternalServerError)
 		}
 		qr, err = db.Query(`select * from temporary_members;`)
 		if err != nil {
-			panic(err)
+			http.Error(w, err.Error(), http.StatusInternalServerError)
 		}
 		for qr.Next() {
 			err = qr.Scan(&tmpMember.FirstName, &tmpMember.LastName, &tmpMember.Email, &tmpMember.Address, &tmpMember.PhoneNum, &tmpMember.Password, &tmpMember.Status, &tmpMember.ImageName)
 			if err != nil {
-				panic(err)
+				http.Error(w, err.Error(), http.StatusInternalServerError)
 			}
 			tmpMembers = append(tmpMembers, tmpMember)
 		}
@@ -114,9 +114,9 @@ func DeleteRequest(w http.ResponseWriter, r *http.Request) {
 
 		db, err := dbconfig.GetMySQLDb()
 		if err != nil {
-			panic(err)
+			http.Error(w, err.Error(), http.StatusInternalServerError)
 		}
-		_, err = db.Query(`delete from temporary_members where mb_email = ?;`, email)
+		_, err = db.Query(`delete from temporary_members where mb_email = $1;`, email)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return

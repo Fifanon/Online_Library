@@ -35,7 +35,7 @@ func ListOfBooksBorrowed(w http.ResponseWriter, r *http.Request) {
 		if os.Getenv("EMAIL") == lbemail {
 			qr, err = db.Query(`select book_isbn,book_title,author_name,pages,subject_area,number,b_imagename,fine,deadline,m_firstname,m_lastname,m_email,m_imagename from books_borrowed, book_instances,members where isbn = book_isbn and m_email = member_email;`)
 		}else{
-			qr, err = db.Query(`select book_isbn,book_title,author_name,pages,subject_area,number,b_imagename,fine,deadline,m_firstname,m_lastname,m_email,m_imagename from books_borrowed, book_instances,members where isbn = book_isbn and m_email = member_email and m_email = ?;`,lbemail)
+			qr, err = db.Query(`select book_isbn,book_title,author_name,pages,subject_area,number,b_imagename,fine,deadline,m_firstname,m_lastname,m_email,m_imagename from books_borrowed, book_instances,members where isbn = book_isbn and m_email = member_email and m_email = $1;`,lbemail)
 		}
 		for qr.Next() {
 			err = qr.Scan(&bookMem.ISBN, &bookMem.Title, &bookMem.Author, &bookMem.Pages, &bookMem.Subject, &bookMem.Number, &bookMem.BookImageName, &bookMem.Fine, &bookMem.Deadline, &bookMem.FirstName, &bookMem.LastName, &bookMem.Email,&bookMem.ImageName)
@@ -47,7 +47,7 @@ func ListOfBooksBorrowed(w http.ResponseWriter, r *http.Request) {
 			if (bookMem.TimeLeft >= 0){
 				bookMem.Deadline = "Passed deadline"
 				bookMem.Fine = 5
-				_, err = db.Query(`update books_borrowed set fine = ?`, bookMem.Fine)
+				_, err = db.Query(`update books_borrowed set fine = $1`, bookMem.Fine)
 				if err != nil {
 					http.Error(w, err.Error(), http.StatusInternalServerError)
 					return

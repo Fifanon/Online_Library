@@ -59,24 +59,24 @@ func UpdateBookprocessing(w http.ResponseWriter, r *http.Request) {
 	    var err error
 	    actualIsbn, err = strconv.Atoi(params["isbn"])
         if err != nil{ 
-           panic(err)
+           http.Error(w, err.Error(), http.StatusInternalServerError)
         }
 		db, err := dbconfig.GetMySQLDb()
 		if err != nil {
-			panic(err)
+			http.Error(w, err.Error(), http.StatusInternalServerError)
 		}
-		qr, err := db.Query(`select book_isbn,book_title,author_name,pages,subject_area from book_instances where book_isbn = ?;`, actualIsbn)
+		qr, err := db.Query(`select book_isbn,book_title,author_name,pages,subject_area from book_instances where book_isbn = $1;`, actualIsbn)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 		}
 		for qr.Next() {
 			err = qr.Scan(&stct.Bk.ISBN, &stct.Bk.Title, &stct.Bk.Author, &stct.Bk.Pages, &stct.Bk.Subject)
 			if err != nil {
-				panic(err)
+				http.Error(w, err.Error(), http.StatusInternalServerError)
 			}
 		}
 		if err != nil {
-			panic(err)		
+			http.Error(w, err.Error(), http.StatusInternalServerError)		
 		}
 		r.ParseForm()
 		isbn := r.Form.Get("isbn")
@@ -104,19 +104,19 @@ func UpdateBookprocessing(w http.ResponseWriter, r *http.Request) {
 		}
 		newIsbn, err := strconv.Atoi(isbn)
 		if err != nil{
-			panic(err)
+			http.Error(w, err.Error(), http.StatusInternalServerError)
 		}
 		numOfpages, err := strconv.Atoi(pages)
 		if err != nil{
-			panic(err)
+			http.Error(w, err.Error(), http.StatusInternalServerError)
 		}
 
-		_, err = db.Query(`update book_instances set book_isbn = ?,book_title = ?,author_name = ?,pages = ?,subject_area = ? where book_isbn = ?;`, newIsbn, title, author, numOfpages, subjectArea, actualIsbn)
+		_, err = db.Query(`update book_instances set book_isbn = $1,book_title = $2,author_name = $3,pages = $4,subject_area = $5 where book_isbn = $6;`, newIsbn, title, author, numOfpages, subjectArea, actualIsbn)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
-		qrs, err := db.Query(`select book_isbn,book_title,author_name,pages,subject_area,number from book_instances where book_isbn = ?;`, newIsbn)
+		qrs, err := db.Query(`select book_isbn,book_title,author_name,pages,subject_area,number from book_instances where book_isbn = $1;`, newIsbn)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
@@ -124,7 +124,7 @@ func UpdateBookprocessing(w http.ResponseWriter, r *http.Request) {
 		for qrs.Next() {
 			err = qrs.Scan(&stct.Bk.ISBN, &stct.Bk.Title, &stct.Bk.Author, &stct.Bk.Pages, &stct.Bk.Subject, &stct.Bk.Number)
 			if err != nil {
-				panic(err)
+				http.Error(w, err.Error(), http.StatusInternalServerError)
 			}
 			if stct.Bk.Number > 0 {
 				stct.Bk.Availability = "AVAILABLE"

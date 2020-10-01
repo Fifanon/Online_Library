@@ -3,7 +3,6 @@ package searchbook
 import (
 	"database/sql"
 	"strings"
-	"fmt"
 	stct "github.com/Fifanon/online_library/structs"
 	dbconfig "github.com/Fifanon/online_library/config"
 )
@@ -15,11 +14,11 @@ func SearchByTitle(title string) (books []stct.BookStruct, found bool, errEnc bo
 	db, err := dbconfig.GetMySQLDb()
 
 	if err != nil {
-		panic(err)
-	}
+       panic(err)	
+    }
 	title = strings.ToLower(title)
 	qr, err := db.Query(`select book_isbn,book_title,author_name,pages,subject_area,number,b_imagename from book_instances
-                      where book_title LIKE ?;`, "%"+title+"%")
+                      where book_title LIKE $1;`, "%"+title+"%")
 	for qr.Next() {
 		err = qr.Scan(&stct.Bk.ISBN, &stct.Bk.Title, &stct.Bk.Author, &stct.Bk.Pages, &stct.Bk.Subject, &stct.Bk.Number, &stct.Bk.BookImageName)
 		if err != nil {
@@ -52,7 +51,7 @@ func SearchByTitle(title string) (books []stct.BookStruct, found bool, errEnc bo
 			continue
 		}
 		qr, err := db.Query(`select book_isbn,book_title,author_name,pages,subject_area,number,b_imagename from book_instances
-                         where book_title LIKE ?;`, "%"+fOrlname+"%")
+                         where book_title LIKE $1;`, "%"+fOrlname+"%")
 		for qr.Next() {
 			err = qr.Scan(&stct.Bk.ISBN, &stct.Bk.Title, &stct.Bk.Author, &stct.Bk.Pages, &stct.Bk.Subject, &stct.Bk.Number, &stct.Bk.BookImageName)
 			if err != nil {
@@ -71,8 +70,6 @@ func SearchByTitle(title string) (books []stct.BookStruct, found bool, errEnc bo
 		}
 	}
   }
-  fmt.Println(len(books))
-  fmt.Println(found)
 	if len(books) == 0 {
 		found = false
 	} else {

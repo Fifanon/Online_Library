@@ -42,7 +42,7 @@ func BookAdding(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			stct.Msg.Any = "Choose a file please"
 			vars.Tpl.ExecuteTemplate(w, "bookAdding.html", stct.Msg)
-			panic(err)
+			http.Error(w, err.Error(), http.StatusInternalServerError)
 		}
 		defer file.Close()
 		subjectAreas := [6]string{"Mathematics", "Physics", "Biology", "Computer Engineering", "Electronic Engineering", "Mechanical Engineering"}
@@ -50,7 +50,7 @@ func BookAdding(w http.ResponseWriter, r *http.Request) {
 		r.ParseForm()
 		isbn := r.FormValue("isbn")
 		if err !=nil {
-			panic(err)
+			http.Error(w, err.Error(), http.StatusInternalServerError)
 		}
 		stct.Bk.ISBN,err = strconv.Atoi(isbn)
 
@@ -59,15 +59,15 @@ func BookAdding(w http.ResponseWriter, r *http.Request) {
 		pages:= r.FormValue("pages")
 		stct.Bk.Pages,err = strconv.Atoi(pages)
 		if err !=nil {
-			panic(err)
+			http.Error(w, err.Error(), http.StatusInternalServerError)
 		}
 		number := r.FormValue("number")
 		if err !=nil {
-			panic(err)
+			http.Error(w, err.Error(), http.StatusInternalServerError)
 		}
 		stct.Bk.Number,err = strconv.Atoi(number)
 		if err !=nil {
-			panic(err)
+			http.Error(w, err.Error(), http.StatusInternalServerError)
 		}
 
 		stct.Bk.Subject = r.FormValue("subject_area")
@@ -77,9 +77,9 @@ func BookAdding(w http.ResponseWriter, r *http.Request) {
 
 		db, err := dbconfig.GetMySQLDb()
 			if err != nil {
-				panic(err)
+				http.Error(w, err.Error(), http.StatusInternalServerError)
 			}
-			qr := db.QueryRow(`select book_title from book_instances where book_isbn = ?;`, isbn)
+			qr := db.QueryRow(`select book_title from book_instances where book_isbn = $1;`, isbn)
 			err = qr.Scan(&stct.Bk.Title)
 			if err == nil {
 				stct.Msg.Any = "This book already exists"
@@ -91,23 +91,23 @@ func BookAdding(w http.ResponseWriter, r *http.Request) {
 				if err == sql.ErrNoRows {
 
 					tmp, err := db.Prepare(`INSERT into book_instances (book_isbn,book_title,author_name,pages,subject_area,number,b_imagename)
-                                     values(?,?,?,?,?,?,?)`)
+                                     values($1,$2,$3,$4,$5,$6,$7)`)
 					if err != nil {
-						panic(err)
+						http.Error(w, err.Error(), http.StatusInternalServerError)
 					}
 					_, err = tmp.Exec(&stct.Bk.ISBN, &stct.Bk.Title, &stct.Bk.Author, &stct.Bk.Pages, &stct.Bk.Subject,&stct.Bk.Number, &stct.Bk.BookImageName)
 					if err != nil {
-						panic(err)
+						http.Error(w, err.Error(), http.StatusInternalServerError)
 					}
 					for i := 0; i < 6; i++ {
 						if subjectAreas[i] == stct.Bk.Subject{
 							f, err := os.OpenFile("./project_files//public/subj-img"+subjectAreas[i]+"/"+vars.CoverFilename, os.O_WRONLY|os.O_CREATE, 0666)
 							if err != nil {
-								panic(err)
+								http.Error(w, err.Error(), http.StatusInternalServerError)
 							}
 							f, err = os.OpenFile("./project_files//public/subj-img/books/"+vars.CoverFilename, os.O_WRONLY|os.O_CREATE, 0666)
 							if err != nil {
-								panic(err)
+								http.Error(w, err.Error(), http.StatusInternalServerError)
 							}
 							f.Write(vars.Coverfilebytes)
 						}
@@ -116,6 +116,6 @@ func BookAdding(w http.ResponseWriter, r *http.Request) {
 					vars.GotFile = false
 					return
 				}
-				panic(err)
+				http.Error(w, err.Error(), http.StatusInternalServerError)
 			}
 }

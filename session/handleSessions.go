@@ -47,7 +47,7 @@ func SetSession(name string, response http.ResponseWriter) {
         }
         http.SetCookie(response, cookie)
     }else{
-        panic(err)
+        http.Error(response, err.Error(), http.StatusInternalServerError)
     }
 
     return

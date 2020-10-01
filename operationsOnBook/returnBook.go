@@ -37,29 +37,29 @@ func ReturnBookMemberSearch(w http.ResponseWriter, r *http.Request) {
 		}
 		db, err := dbconfig.GetMySQLDb()
 		if err != nil {
-			panic(err)
+			http.Error(w, err.Error(), http.StatusInternalServerError)
 		}
 
-		qr, err := db.Query(`select bb.isbn,m.m_imagename,m.m_firstname,m.m_lastname, m.m_email,bb.fine from books_borrowed bb join members as m on m.m_email = bb.member_email where bb.member_email = ?;`, email)
+		qr, err := db.Query(`select bb.isbn,m.m_imagename,m.m_firstname,m.m_lastname, m.m_email,bb.fine from books_borrowed bb join members as m on m.m_email = bb.member_email where bb.member_email = $1;`, email)
 		if err != nil {
-			panic(err)
+			http.Error(w, err.Error(), http.StatusInternalServerError)
 		}
 		for qr.Next() {
 			err = qr.Scan(&stct.BooknBorr.ISBN, &stct.BooknBorr.ImageName, &stct.BooknBorr.FirstName, &stct.BooknBorr.LastName, &stct.BooknBorr.Email, &stct.BooknBorr.Fine)
 			if err != nil {
-				panic(err)
+				http.Error(w, err.Error(), http.StatusInternalServerError)
 			}
 
 			isbn := stct.BooknBorr.ISBN
-			qrb, err := db.Query(`select book_title,author_name,b_imagename, subject_area from book_instances where book_isbn = ?;`, isbn)
+			qrb, err := db.Query(`select book_title,author_name,b_imagename, subject_area from book_instances where book_isbn = $1;`, isbn)
 			if err != nil {
-				panic(err)
+				http.Error(w, err.Error(), http.StatusInternalServerError)
 			}
 
 			for qrb.Next() {
 				err = qrb.Scan(&stct.BooknBorr.Title, &stct.BooknBorr.Author, &stct.BooknBorr.BookImageName,&stct.BooknBorr.Subject)
 					if err != nil {
-						panic(err)
+						http.Error(w, err.Error(), http.StatusInternalServerError)
 					}
 			}
 			booknBorrs = append(booknBorrs, stct.BooknBorr)
@@ -85,15 +85,15 @@ func SuccReturnBook(w http.ResponseWriter, r *http.Request) {
 		isbn := params["isbn"]
 		db, err := dbconfig.GetMySQLDb()
 		if err != nil {
-			panic(err)
+			http.Error(w, err.Error(), http.StatusInternalServerError)
 		}
-		_, err = db.Query(`delete from books_borrowed where isbn = ?;`, isbn)
+		_, err = db.Query(`delete from books_borrowed where isbn = $1;`, isbn)
 		if err != nil {
-			panic(err)
+			http.Error(w, err.Error(), http.StatusInternalServerError)
 		}
-		_, err = db.Query(`update book_instances set number = number+1 where book_isbn = ?;`, isbn)
+		_, err = db.Query(`update book_instances set number = number+1 where book_isbn = $1;`, isbn)
 		if err != nil {
-			panic(err)
+			http.Error(w, err.Error(), http.StatusInternalServerError)
 		}
 		stct.Msg.Done = "Done"
 		vars.Tpl.ExecuteTemplate(w, "bookReturning.html", stct.Msg)

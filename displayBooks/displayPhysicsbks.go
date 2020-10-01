@@ -22,11 +22,11 @@ func DisplayPhysicsBooks(w http.ResponseWriter, r *http.Request) {
 		var enoughBr bool
 		db, err := dbconfig.GetMySQLDb()
 		if err != nil {
-			panic(err)
+			http.Error(w, err.Error(), http.StatusInternalServerError)
 		}
-		borrqr, err := db.Query(`select count(*) from books_borrowed where member_email = ?;`, stct.User.Email)
+		borrqr, err := db.Query(`select count(*) from books_borrowed where member_email = $1;`, stct.User.Email)
 		if err != nil {
-			panic(err)
+			http.Error(w, err.Error(), http.StatusInternalServerError)
 		}
 		var fcount int
 		var scount int
@@ -34,7 +34,7 @@ func DisplayPhysicsBooks(w http.ResponseWriter, r *http.Request) {
 		for borrqr.Next() {
 			err = borrqr.Scan(&fcount)
 			if err != nil {
-				panic(err)
+				http.Error(w, err.Error(), http.StatusInternalServerError)
 			}
 		}
 		if fcount < 5 {
@@ -44,37 +44,37 @@ func DisplayPhysicsBooks(w http.ResponseWriter, r *http.Request) {
 		}
 		qr, err := db.Query(`select * from book_instances where subject_area = 'Physics';`)
 		if err != nil {
-			panic(err)
+			http.Error(w, err.Error(), http.StatusInternalServerError)
 		}
 
 		for qr.Next() {
 			err = qr.Scan(&stct.Bk.ISBN, &stct.Bk.Title, &stct.Bk.Author, &stct.Bk.Pages, &stct.Bk.Subject, &stct.Bk.Number, &stct.Bk.BookImageName)
 			if err != nil {
-				panic(err)
+				http.Error(w, err.Error(), http.StatusInternalServerError)
 			}
 			if stct.Bk.Number != 0 {
 				stct.Bk.Availability = "AVAILABLE"
 			} else {
 				stct.Bk.Availability = "NOT AVAILABLE"
 			}
-			borrqr, err = db.Query(`select count(*) from books_borrowed where member_email = ? and isbn = ?;`, stct.User.Email, stct.Bk.ISBN)
+			borrqr, err = db.Query(`select count(*) from books_borrowed where member_email = $1 and isbn = $2;`, stct.User.Email, stct.Bk.ISBN)
 			if err != nil {
-				panic(err)
+				http.Error(w, err.Error(), http.StatusInternalServerError)
 			}
 			for borrqr.Next() {
 				err = borrqr.Scan(&fcount)
 				if err != nil {
-					panic(err)
+					http.Error(w, err.Error(), http.StatusInternalServerError)
 				}
 			}
-			borrqr, err = db.Query(`select count(*) from tmp_borrow where mb_email = ? and bk_isbn = ?;`, stct.User.Email, stct.Bk.ISBN)
+			borrqr, err = db.Query(`select count(*) from tmp_borrow where mb_email = $1 and bk_isbn = $2;`, stct.User.Email, stct.Bk.ISBN)
 			if err != nil {
-				panic(err)
+				http.Error(w, err.Error(), http.StatusInternalServerError)
 			}
 			for borrqr.Next() {
 				err = borrqr.Scan(&scount)
 				if err != nil {
-					panic(err)
+					http.Error(w, err.Error(), http.StatusInternalServerError)
 				}
 			}
 			count := fcount + scount
@@ -101,7 +101,7 @@ func DisplayPhysicsBooks(w http.ResponseWriter, r *http.Request) {
 		checkqr := db.QueryRow(`select l_email from librarian;`)
 		err = checkqr.Scan(&lbemail)
 		if err != nil {
-			panic(err)
+			http.Error(w, err.Error(), http.StatusInternalServerError)
 		}
 		if os.Getenv("EMAIL") == lbemail {
 			vars.Tpl.ExecuteTemplate(w, "booksPhysics.html", books)

@@ -33,9 +33,9 @@ func CancelThisMember(w http.ResponseWriter, r *http.Request) {
 
 	db, err := dbconfig.GetMySQLDb()
 	if err != nil {
-		panic(err)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
-	_, err = db.Query(`delete from  members where m_email = ?;`, params["email"])
+	_, err = db.Query(`delete from  members where m_email = $1;`, params["email"])
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return

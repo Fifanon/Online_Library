@@ -16,9 +16,9 @@ func ProcessMemberSearch(w http.ResponseWriter, r *http.Request) {
 
 	db, err := dbconfig.GetMySQLDb()
 	if err != nil {
-		panic(err)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
-	rows := db.QueryRow(`select m_firstname,m_lastname,m_email,m_address,m_telephone,m_status,m_imagename FROM members where m_email = ?;`, myuser.Email)
+	rows := db.QueryRow(`select m_firstname,m_lastname,m_email,m_address,m_telephone,m_status,m_imagename FROM members where m_email = $1;`, myuser.Email)
 	err = rows.Scan(&myuser.FirstName, &myuser.LastName, &myuser.Email, &myuser.Address, &myuser.PhoneNum, &myuser.Status, &myuser.ImageName)
 	db.Close()
 	if err != nil {

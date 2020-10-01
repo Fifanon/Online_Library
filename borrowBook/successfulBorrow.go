@@ -45,31 +45,31 @@ func SuccBorrow(w http.ResponseWriter, r *http.Request) {
 		var mytime string
 		db, err := dbconfig.GetMySQLDb()
 		if err != nil {
-			panic(err)
+			http.Error(w, err.Error(), http.StatusInternalServerError)
 		}
 		qr, err := db.Query(`select book_isbn, book_title, author_name, pages,subject_area, number,b_imagename from
-                       (book_instances join tmp_borrow on book_isbn = bk_isbn) where mb_email = ?;`, stct.User.Email)
+                       (book_instances join tmp_borrow on book_isbn = bk_isbn) where mb_email = $1;`, stct.User.Email)
 		if err != nil {
-			panic(err)
+			http.Error(w, err.Error(), http.StatusInternalServerError)
 		}
 
 		for qr.Next() {
 			err = qr.Scan(&stct.Bk.ISBN, &stct.Bk.Title, &stct.Bk.Author, &stct.Bk.Pages, &stct.Bk.Subject, &stct.Bk.Number, &stct.Bk.BookImageName)
 			if err != nil {
-				panic(err)
+				http.Error(w, err.Error(), http.StatusInternalServerError)
 			}
 			stct.Bk.Fine = 0
 			books = append(books, stct.Bk)
 		}
 		qr, err = db.Query(`select book_isbn,book_title, author_name, pages,subject_area,number,b_imagename,bowd_time,fine from
-                       (book_instances join books_borrowed on book_isbn = bk_isbn) where member_email = ?;`, stct.User.Email)
+                       (book_instances join books_borrowed on book_isbn = bk_isbn) where member_email = $1;`, stct.User.Email)
 		if err != nil {
-			panic(err)
+			http.Error(w, err.Error(), http.StatusInternalServerError)
 		}
 		for qr.Next() {
 			err = qr.Scan(&stct.Bk.ISBN, &stct.Bk.Title, &stct.Bk.Author, &stct.Bk.Pages, &stct.Bk.Subject, &stct.Bk.Number, &stct.Bk.BookImageName, &mytime, &stct.Bk.Fine)
 			if err != nil {
-				panic(err)
+				http.Error(w, err.Error(), http.StatusInternalServerError)
 			}
 			deadline, daysPassed := processTime(mytime)
 			if daysPassed == 0 {

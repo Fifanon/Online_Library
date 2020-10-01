@@ -24,16 +24,16 @@ func BorrowBook(w http.ResponseWriter, r *http.Request) {
 
 		db, err := dbconfig.GetMySQLDb()
 		if err != nil {
-			panic(err)
+			http.Error(w, err.Error(), http.StatusInternalServerError)
 		}
-		qr, err := db.Query(`select count(*) from books_borrowed,tmp_borrow where mb_email = member_email and member_email = ?;`, stct.User.Email)
+		qr, err := db.Query(`select count(*) from books_borrowed,tmp_borrow where mb_email = member_email and member_email = $1;`, stct.User.Email)
 		if err != nil {
-			panic(err)
+			http.Error(w, err.Error(), http.StatusInternalServerError)
 		}
 		for qr.Next() {
 			err = qr.Scan(&brrNum)
 			if err != nil {
-				panic(err)
+				http.Error(w, err.Error(), http.StatusInternalServerError)
 			}
 		}
 		if brrNum >= 5 {
@@ -42,15 +42,15 @@ func BorrowBook(w http.ResponseWriter, r *http.Request) {
 			vars.Message = ""
 			return
 		}
-		qr, err = db.Query(`select fine from books_borrowed where member_email = ?;`, stct.User.Email)
+		qr, err = db.Query(`select fine from books_borrowed where member_email = $1;`, stct.User.Email)
 		if err != nil {
-			panic(err)
+			http.Error(w, err.Error(), http.StatusInternalServerError)
 		}
 		for qr.Next() {
 			err = qr.Scan(&fine)
 			totalfine = totalfine + fine
 			if err != nil {
-				panic(err)
+				http.Error(w, err.Error(), http.StatusInternalServerError)
 			}
 		}
 		if totalfine > 0 {
@@ -59,18 +59,18 @@ func BorrowBook(w http.ResponseWriter, r *http.Request) {
 			vars.Message = ""
 			return
 		}
-		temp, err := db.Prepare(`insert into tmp_borrow (bk_isbn,mb_email) values(?,?);`)
+		temp, err := db.Prepare(`insert into tmp_borrow (bk_isbn,mb_email) values($1,$2);`)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
 		_, err = temp.Exec(&bIsbn, &mEmail)
 		if err != nil {
-			panic(err)
+			http.Error(w, err.Error(), http.StatusInternalServerError)
 		}
-		_, err = db.Query(`update book_instances set number=number-1 where book_isbn = ?;`, bIsbn)
+		_, err = db.Query(`update book_instances set number=number-1 where book_isbn = $1;`, bIsbn)
 		if err != nil {
-			panic(err)
+						http.Error(w, err.Error(), http.StatusInternalServerError)
 		}
 
 		if vars.Subject == "Computer Engineering" {

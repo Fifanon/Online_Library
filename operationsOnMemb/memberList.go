@@ -16,18 +16,18 @@ func MembersList(w http.ResponseWriter, r *http.Request) {
 	}
 		db, err := dbconfig.GetMySQLDb()
 		if err != nil {
-			panic(err)
+			http.Error(w, err.Error(), http.StatusInternalServerError)
 		}
 		qr, err := db.Query(`select * from members;`)
 		if err != nil {
-			panic(err)
+			http.Error(w, err.Error(), http.StatusInternalServerError)
 		}
 		var member stct.Users
 		members := []stct.Users{}
 		for qr.Next() {
 			err = qr.Scan(&member.FirstName, &member.LastName, &member.Email, &member.Address, &member.PhoneNum, &member.Password, &member.Status, &member.ImageName, &member.DateTime)
 			if err != nil {
-				panic(err)
+				http.Error(w, err.Error(), http.StatusInternalServerError)
 			}
 			members = append(members, member)
 		}

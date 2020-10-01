@@ -24,19 +24,19 @@ func IssuedBook(w http.ResponseWriter, r *http.Request) {
 	}
 		db, err := dbconfig.GetMySQLDb()
 		if err != nil {
-			panic(err)
+			http.Error(w, err.Error(), http.StatusInternalServerError)
 		}
 		qr, err := db.Query(`select book_isbn,book_title,author_name,pages,subject_area,number,b_imagename,m_imagename,m_firstname,m_lastname, m_email,m_status,m_address from tmp_borrow,members,book_instances
                        where book_isbn = bk_isbn and m_email = mb_email;`)
 		if err != nil {
-			panic(err)
+			http.Error(w, err.Error(), http.StatusInternalServerError)
 		}
 		bookndMembs := []stct.BorrowInfo{}
 		for qr.Next() {
 			err = qr.Scan(&bookndMem.ISBN, &bookndMem.Title, &bookndMem.Author, &bookndMem.Pages, &bookndMem.Subject,
 				&bookndMem.Number, &bookndMem.BookImageName, &bookndMem.ImageName, &bookndMem.FirstName, &bookndMem.LastName, &bookndMem.Email,&bookndMem.Status,&bookndMem.Address)
 			if err != nil {
-				panic(err)
+				http.Error(w, err.Error(), http.StatusInternalServerError)
 			}
 			bookndMembs = append(bookndMembs, bookndMem)
 		}
@@ -64,31 +64,31 @@ func SuccIssueBook(w http.ResponseWriter, r *http.Request) {
 		deadline := now.AddDate(0, 0, 15)
 		db, err := dbconfig.GetMySQLDb()
 		if err != nil {
-			panic(err)
+			http.Error(w, err.Error(), http.StatusInternalServerError)
 		}
 		temp, err := db.Prepare(`insert into books_borrowed (isbn,member_email,fine,bowd_time,deadline)
-              values(?,?,?,NOW(),?);`)
+              values($1,$2,$3,NOW(),$4);`)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
 		_, err = temp.Exec(&isbn, &email, &fine, &deadline)
 		if err != nil {
-			panic(err)
+			http.Error(w, err.Error(), http.StatusInternalServerError)
 		}
-		_, err = db.Query(`delete from tmp_borrow where mb_email = ? and bk_isbn = ?;`, email, isbn)
+		_, err = db.Query(`delete from tmp_borrow where mb_email = $1 and bk_isbn = $2;`, email, isbn)
 		if err != nil {
-			panic(err)
+			http.Error(w, err.Error(), http.StatusInternalServerError)
 		}
 		qr, err := db.Query(`select book_isbn,book_title,author_name book_instances
-		where book_isbn = ?;`, isbn)
+		where book_isbn = $1;`, isbn)
         if err != nil {
-           panic(err)
+           http.Error(w, err.Error(), http.StatusInternalServerError)
         }
         for qr.Next() {
             err = qr.Scan(&bookndMem.ISBN, &bookndMem.Title, &bookndMem.Author)
             if err != nil {
-               panic(err)
+               http.Error(w, err.Error(), http.StatusInternalServerError)
             }
 		}
 		db.Close() 
@@ -117,21 +117,21 @@ func DeleteBookRequest(w http.ResponseWriter, r *http.Request) {
 
 		db, err := dbconfig.GetMySQLDb()
 		if err != nil {
-			panic(err)
+			http.Error(w, err.Error(), http.StatusInternalServerError)
 		}
-		_, err = db.Query(`delete from tmp_borrow where mb_email = ? and bk_isbn = ?;`, email, isbn)
+		_, err = db.Query(`delete from tmp_borrow where mb_email = $1 and bk_isbn = $2;`, email, isbn)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
-		qr, err := db.Query(`select book_isbn,book_title,author_name from book_instances where book_isbn = ?;`, isbn)
+		qr, err := db.Query(`select book_isbn,book_title,author_name from book_instances where book_isbn = $1;`, isbn)
         if err != nil {
-           panic(err)
+           http.Error(w, err.Error(), http.StatusInternalServerError)
         }
         for qr.Next() {
             err = qr.Scan(&bookndMem.ISBN, &bookndMem.Title, &bookndMem.Author)
             if err != nil {
-               panic(err)
+               http.Error(w, err.Error(), http.StatusInternalServerError)
             }
 		}
 		db.Close()

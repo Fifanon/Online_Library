@@ -22,11 +22,11 @@ func ProcessMemberStatistics(w http.ResponseWriter, r *http.Request) {
 		var fine int
 		db, err := dbconfig.GetMySQLDb()
 		if err != nil {
-			panic(err)
+			http.Error(w, err.Error(), http.StatusInternalServerError)
 		}
 		bookBorrow.Fine = 0
 		bookBorrow.Number = 0
-		qr2, err := db.Query(`select fine from books_borrowed where member_email = ?;`, mbemail)
+		qr2, err := db.Query(`select fine from books_borrowed where member_email = $1;`, mbemail)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 		}

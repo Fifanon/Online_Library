@@ -14,11 +14,11 @@ func SearchByAuthor(author string) (books []stct.BookStruct, found bool, errEnc 
 	db, err := dbconfig.GetMySQLDb()
 
 	if err != nil {
-		panic(err)
+		panic(err)	
 	}
 	author = strings.Title(author)
 	qr, err := db.Query(`select book_isbn,book_title,author_name,pages,subject_area,number,b_imagename from book_instances
-                      where author_name LIKE ?;`, "%"+author+"%")
+                      where author_name LIKE $1;`, "%"+author+"%")
 	for qr.Next() {
 		err = qr.Scan(&stct.Bk.ISBN, &stct.Bk.Title, &stct.Bk.Author, &stct.Bk.Pages, &stct.Bk.Subject, &stct.Bk.Number, &stct.Bk.BookImageName)
 		if err != nil {
@@ -50,7 +50,7 @@ func SearchByAuthor(author string) (books []stct.BookStruct, found bool, errEnc 
 			continue
 		}
 		qr, err := db.Query(`select book_isbn,book_title,author_name,pages,subject_area,number,b_imagename from book_instances
-                         where author_name LIKE ?;`, "%"+fOrlname+"%")
+                         where author_name LIKE $1;`, "%"+fOrlname+"%")
 		for qr.Next() {
 			err = qr.Scan(&stct.Bk.ISBN, &stct.Bk.Title, &stct.Bk.Author, &stct.Bk.Pages, &stct.Bk.Subject, &stct.Bk.Number, &stct.Bk.BookImageName)
 			if err != nil {

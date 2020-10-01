@@ -21,7 +21,7 @@ func MembersOwingFine(w http.ResponseWriter, r *http.Request) {
 		var fine int
 		db, err := dbconfig.GetMySQLDb()
 		if err != nil {
-			panic(err)
+			http.Error(w, err.Error(), http.StatusInternalServerError)
 		}
 		qr, err := db.Query(`select distinct member_email from books_borrowed where fine > 0;`)
 		if err != nil {
@@ -36,7 +36,7 @@ func MembersOwingFine(w http.ResponseWriter, r *http.Request) {
 		}
 		bookBorrow.Fine = 0
 		for _, mbemail := range mbemails {
-			qr2, err := db.Query(`select fine from books_borrowed where member_email = ? and fine > 0;`, mbemail)
+			qr2, err := db.Query(`select fine from books_borrowed where member_email = $1 and fine > 0;`, mbemail)
 			if err != nil {
 				http.Error(w, err.Error(), http.StatusInternalServerError)
 			}
@@ -47,7 +47,7 @@ func MembersOwingFine(w http.ResponseWriter, r *http.Request) {
 				}
 				bookBorrow.Fine = bookBorrow.Fine + fine
 			}
-			qr3, err := db.Query(`select m_firstname,m_lastname from members where m_email = ?;`, mbemail)
+			qr3, err := db.Query(`select m_firstname,m_lastname from members where m_email = $1;`, mbemail)
 			if err != nil {
 				http.Error(w, err.Error(), http.StatusInternalServerError)
 			}

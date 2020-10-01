@@ -22,7 +22,7 @@ func ProcessBookSearch(w http.ResponseWriter, r *http.Request) {
 	books := []stct.BookStruct{}
 	db, err := dbconfig.GetMySQLDb()
 	if err != nil {
-		panic(err)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
 
 	search := r.Form.Get("input")
@@ -30,7 +30,7 @@ func ProcessBookSearch(w http.ResponseWriter, r *http.Request) {
 	checkqr := db.QueryRow(`select l_email from librarian;`)
 	err = checkqr.Scan(&lbemail)
 	if err != nil {
-		panic(err)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
 	if r.Form.Get("searchBy") == "title" {
 		books, bkfound, errEnc = SearchByTitle(search)

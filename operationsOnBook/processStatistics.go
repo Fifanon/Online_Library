@@ -25,11 +25,11 @@ func ProcessStatistics(w http.ResponseWriter, r *http.Request) {
 
 		db, err := dbconfig.GetMySQLDb()
 		if err != nil {
-			panic(err)
+			http.Error(w, err.Error(), http.StatusInternalServerError)
 		}
 
 		for _, subj := range subjectAreas {
-			qr1, err := db.Query(`select number from book_instances where subject_area = ?;`, subj)
+			qr1, err := db.Query(`select number from book_instances where subject_area = $1;`, subj)
 			if err != nil {
 				http.Error(w, err.Error(), http.StatusInternalServerError)
 			}
@@ -39,7 +39,7 @@ func ProcessStatistics(w http.ResponseWriter, r *http.Request) {
 					http.Error(w, err.Error(), http.StatusInternalServerError)
 				}
 			}
-			qr2, err := db.Query(`select count(*) from books_borrowed join book_instances on book_isbn = isbn and subject_area = ?;`, subj)
+			qr2, err := db.Query(`select count(*) from books_borrowed join book_instances on book_isbn = isbn and subject_area = $1;`, subj)
 			if err != nil {
 				http.Error(w, err.Error(), http.StatusInternalServerError)
 			}

@@ -75,9 +75,9 @@ func RemoveBookprocessing(w http.ResponseWriter, r *http.Request) {
 
 		db, err := dbconfig.GetMySQLDb()
 		if err != nil {
-			panic(err)
+			http.Error(w, err.Error(), http.StatusInternalServerError)
 		}
-		_, err = db.Query(`delete from book_instances where book_isbn = ?;`, isbn)
+		_, err = db.Query(`delete from book_instances where book_isbn = $1;`, isbn)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return

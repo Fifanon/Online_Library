@@ -22,7 +22,7 @@ type emailStruct struct{
 func SignupProcessor(w http.ResponseWriter, r *http.Request) {
 	_, err := os.OpenFile("./project_files/public/mphotos/"+vars.PhotoFileName, os.O_WRONLY|os.O_CREATE, 0666)
 	if err != nil {
-		panic(err)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
 	err = ioutil.WriteFile("./project_files/public/mphotos/"+vars.PhotoFileName, vars.PhotoFilebytes, 0)
 
@@ -32,25 +32,25 @@ func SignupProcessor(w http.ResponseWriter, r *http.Request) {
 	db, err := dbconfig.GetMySQLDb()
 
 	if err != nil {
-		panic(err)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
 
 	cost := bcrypt.DefaultCost
 	hash, err := bcrypt.GenerateFromPassword([]byte(stct.User.Password), cost)
 	if err != nil {
-		panic(err)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
 	stct.User.Password = string(hash)
 
 	temp, err := db.Prepare(`insert into temporary_members (mb_firster,mb_laster,mb_email,mb_address,mb_tel,mb_pwd,m_status,m_photo)
-            values(?,?,?,?,?,?,?,?);`)
+            values($1,$2,$3,$4,$5,$6,$7,$8);`)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 	_, err = temp.Exec(&stct.User.FirstName, &stct.User.LastName, &stct.User.Email, &stct.User.Address, &stct.User.PhoneNum, &stct.User.Password, &stct.User.Status, &stct.User.ImageName)
 	if err != nil {
-		panic(err)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
 	db.Close()
 	subject := "NEW MEMBER TO ADD"
@@ -68,12 +68,12 @@ func UploadPhotoFile(w http.ResponseWriter, r *http.Request) {
 	r.ParseMultipartForm(10 << 20)
 	file, handler, err := r.FormFile("imgfile")
 	if err != nil {
-		panic(err)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
 	vars.PhotoFileName = handler.Filename
 	vars.PhotoFilebytes, err = ioutil.ReadAll(file)
 	if err != nil {
-		panic(err)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
 	stct.User.Password = strings.Join(r.Form["password"],"")
 	stct.User.ImageName = vars.PhotoFileName
@@ -96,7 +96,7 @@ func CheckEmail(w http.ResponseWriter, r *http.Request) {
 
 	 emailjson, err := ioutil.ReadAll(r.Body)
 	 if err != nil {
-		 panic(err)
+		 http.Error(w, err.Error(), http.StatusInternalServerError)
 	 }
 	 bytes := []byte(emailjson)
 
@@ -107,17 +107,17 @@ func CheckEmail(w http.ResponseWriter, r *http.Request) {
 	 //open database
 	 db, err := dbconfig.GetMySQLDb()
 	 if err != nil {
-		 panic(err)
+		 http.Error(w, err.Error(), http.StatusInternalServerError)
 	 }
 	 var email string = ""
 	 
-    qResult := db.QueryRow(`select m_email from members where m_email = ?;`, emailSt.Email)
+    qResult := db.QueryRow(`select m_email from members where m_email = $1;`, emailSt.Email)
      qResult.Scan(&email)
 	 db.Close()
      w.Header().Set("Content-Type", "text/plain")
      w.WriteHeader(http.StatusOK)
 	 _, err = io.WriteString(w, email)
 	 if err != nil{
-		 panic(err)
+		 http.Error(w, err.Error(), http.StatusInternalServerError)
 	 }
 }

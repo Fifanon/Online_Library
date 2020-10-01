@@ -22,17 +22,21 @@ func LoginProcessor (w http.ResponseWriter, r *http.Request) {
 	r.ParseForm()
 	//call on dbconfig.GetMySQLDb for connection to the database
 	db, err := dbconfig.GetMySQLDb()
-
 	if err != nil {
-		panic(err)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
-
 	if r.Form.Get("status") == "Member" {
-		qResult := db.QueryRow(`select m_email,m_password from members where m_email = ?;`, r.Form.Get("email"))
+		qResult := db.QueryRow(`select m_email,m_password from members where m_email = $1`, r.Form.Get("email"))
 		err = qResult.Scan(&stct.User.Email, &stct.User.Password)
+		if err != nil{
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+		}
 	} else {
-		qResult := db.QueryRow(`select l_email,l_password from librarian where l_email = ?;`, r.Form.Get("email"))
+		qResult := db.QueryRow(`select l_email,l_password from librarian where l_email = $1`, r.Form.Get("email"))
 		err = qResult.Scan(&stct.User.Email, &stct.User.Password)
+		if err != nil{
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+		}
 	}
 	db.Close()
 	if err != nil {
