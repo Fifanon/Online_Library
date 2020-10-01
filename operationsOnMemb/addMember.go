@@ -68,16 +68,15 @@ func AddMembervalidate(w http.ResponseWriter, r *http.Request) {
 			}
 		}
 		temp, err := db.Prepare(`insert into members (m_firstname,m_lastname,m_email,m_address,m_telephone,m_password,m_status,m_imagename,m_signuptime)
-              values($1,$2,$2,$3,$4,$5,$6,$7,NOW());`)
+              values($1,$2,$3,$4,$5,$6,$7,$8,NOW());`)
 		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
+            panic(err)			
 		}
 		_, err = temp.Exec(&tmpMember.FirstName, &tmpMember.LastName, &tmpMember.Email, &tmpMember.Address, &tmpMember.PhoneNum, &tmpMember.Password, &tmpMember.Status, &tmpMember.ImageName)
 		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
+			panic(err)			
 		}
-		qr, err = db.Query(`delete from temporary_members where mb_email = ?;`, email)
+		qr, err = db.Query(`delete from temporary_members where mb_email = $1;`, email)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 		}
@@ -96,7 +95,7 @@ func AddMembervalidate(w http.ResponseWriter, r *http.Request) {
 		emailBody := fmt.Sprintf("Your registration at sci-library has been approved. click on the link below to login and get access to our great ressources.\n https://stormy-river-99671.herokuapp.com/home \n\n Regards.")
 		_, err = gomail.SendEmail(stct.User.Email,emailBody, subject)
 		if err != nil{
-			http.Error(w, err.Error(), http.StatusInternalServerError)
+			panic(err)			
 		}
 		vars.Tpl.ExecuteTemplate(w, "memberAdd.html", tmpMembers)
 		return
