@@ -33,6 +33,24 @@
 			"revisionTime": "2020-03-01T20:46:15Z"
 		},
 		{
+			"checksumSHA1": "jq+q3JTk7nIRkTv48EevNjli9Fg=",
+			"path": "github.com/lib/pq",
+			"revision": "083382b7e6fc78cc91eb57afab268fe2f1b6ed6d",
+			"revisionTime": "2020-09-08T16:11:35Z"
+		},
+		{
+			"checksumSHA1": "GX2hcQP8YqrXH+laJJIxUFsqoxU=",
+			"path": "github.com/lib/pq/oid",
+			"revision": "083382b7e6fc78cc91eb57afab268fe2f1b6ed6d",
+			"revisionTime": "2020-09-08T16:11:35Z"
+		},
+		{
+			"checksumSHA1": "PStZaE3pKgMy1kk+hHB/of2FYBk=",
+			"path": "github.com/lib/pq/scram",
+			"revision": "083382b7e6fc78cc91eb57afab268fe2f1b6ed6d",
+			"revisionTime": "2020-09-08T16:11:35Z"
+		},
+		{
 			"checksumSHA1": "oCH3J96RWvO8W4xjix47PModpio=",
 			"path": "golang.org/x/crypto/bcrypt",
 			"revision": "5c72a883971a4325f8c62bf07b6d38c20ea47a6a",
