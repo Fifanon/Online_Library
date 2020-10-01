@@ -117,7 +117,5 @@ func CheckEmail(w http.ResponseWriter, r *http.Request) {
      w.Header().Set("Content-Type", "text/plain")
      w.WriteHeader(http.StatusOK)
 	 _, err = io.WriteString(w, email)
-	 if err != nil{
-		 http.Error(w, err.Error(), http.StatusInternalServerError)
-	 }
+    return
 }

@@ -80,8 +80,7 @@ func SuccIssueBook(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 		}
-		qr, err := db.Query(`select book_isbn,book_title,author_name book_instances
-		where book_isbn = $1;`, isbn)
+		qr, err := db.Query(`select book_isbn,book_title,author_name book_instances where book_isbn = $1;`, isbn)
         if err != nil {
            http.Error(w, err.Error(), http.StatusInternalServerError)
         }
