@@ -65,11 +65,9 @@ func SignupProcessor(w http.ResponseWriter, r *http.Request) {
 
 //UploadPhotoFile **
 func UploadPhotoFile(w http.ResponseWriter, r *http.Request) {
-	r.ParseMultipartForm(10 << 20)
+	r.ParseMultipartForm(10 << 32)
 	file, handler, err := r.FormFile("imgfile")
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-	}
+
 	vars.PhotoFileName = handler.Filename
 	vars.PhotoFilebytes, err = ioutil.ReadAll(file)
 	if err != nil {
