@@ -25,7 +25,7 @@ func DisplayMechEngBooks(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 		}
-		borrqr, err := db.Query(`select count(*) from books_borrowed where member_email = $2;`, stct.User.Email)
+		borrqr, err := db.Query(`select count(*) from books_borrowed where member_email = $1;`, stct.User.Email)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 		}
