@@ -77,7 +77,7 @@ func SuccIssueBook(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
            panic(err)
 		}
-		qr, err := db.Query(`select author_name,book_title from book_instance as b where book_isbn = $1;`, isbn)
+		qr, err := db.Query(`select author_name,book_title from book_instances where book_isbn = $1;`, isbn)
         if err != nil {
 			panic(err)
 		}
