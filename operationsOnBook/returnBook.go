@@ -40,12 +40,12 @@ func ReturnBookMemberSearch(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 		}
 
-		qr, err := db.Query(`select bb.isbn,m.m_imagename,m.m_firstname,m.m_lastname, m.m_email,bb.fine from books_borrowed bb join members as m on m.m_email = bb.member_email where bb.member_email = $1;`, email)
+		qr, err := db.Query(`select bb.isbn,m.m_imagename,m.m_firstname,m.m_lastname, m.m_email,bb.fine,extract(days FROM (bb.deadline - bb.bowd_time)) from books_borrowed bb join members as m on m.m_email = bb.member_email where bb.member_email = $1;`, email)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 		}
 		for qr.Next() {
-			err = qr.Scan(&stct.BooknBorr.ISBN, &stct.BooknBorr.ImageName, &stct.BooknBorr.FirstName, &stct.BooknBorr.LastName, &stct.BooknBorr.Email, &stct.BooknBorr.Fine)
+			err = qr.Scan(&stct.BooknBorr.ISBN, &stct.BooknBorr.ImageName, &stct.BooknBorr.FirstName, &stct.BooknBorr.LastName, &stct.BooknBorr.Email, &stct.BooknBorr.Fine,&stct.BooknBorr.TimeLeft)
 			if err != nil {
 				http.Error(w, err.Error(), http.StatusInternalServerError)
 			}

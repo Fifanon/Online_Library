@@ -12,7 +12,6 @@ import(
 	gomail "github.com/Fifanon/online_library/gomail"
 
 )
-var bookndMem stct.BorrowInfo
 
 
 //IssuedBook **
@@ -24,22 +23,25 @@ func IssuedBook(w http.ResponseWriter, r *http.Request) {
 	}
 		db, err := dbconfig.GetMySQLDb()
 		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
+           panic(err)
 		}
 		qr, err := db.Query(`select book_isbn,book_title,author_name,pages,subject_area,number,b_imagename,m_imagename,m_firstname,m_lastname, m_email,m_status,m_address from tmp_borrow,members,book_instances
                        where book_isbn = bk_isbn and m_email = mb_email;`)
 		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
 		}
 		bookndMembs := []stct.BorrowInfo{}
+		var bookndMem stct.BorrowInfo
+
 		for qr.Next() {
 			err = qr.Scan(&bookndMem.ISBN, &bookndMem.Title, &bookndMem.Author, &bookndMem.Pages, &bookndMem.Subject,
 				&bookndMem.Number, &bookndMem.BookImageName, &bookndMem.ImageName, &bookndMem.FirstName, &bookndMem.LastName, &bookndMem.Email,&bookndMem.Status,&bookndMem.Address)
 			if err != nil {
-				http.Error(w, err.Error(), http.StatusInternalServerError)
+	           panic(err)
 			}
 			bookndMembs = append(bookndMembs, bookndMem)
 		}
+		db.Close() 
+
 		if len(bookndMembs) == 0 {
 			vars.Message = "NO BOOK REQUESTED"
 			vars.Tpl.ExecuteTemplate(w, "NoData.html", vars.Message)
@@ -63,37 +65,38 @@ func SuccIssueBook(w http.ResponseWriter, r *http.Request) {
 		now := time.Now()
 		deadline := now.AddDate(0, 0, 15)
 		db, err := dbconfig.GetMySQLDb()
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
+		if err != nil { 
+           panic(err)
 		}
 		temp, err := db.Prepare(`insert into books_borrowed (isbn,member_email,fine,bowd_time,deadline)
               values($1,$2,$3,NOW(),$4);`)
 		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
+           panic(err)
 		}
 		_, err = temp.Exec(&isbn, &email, &fine, &deadline)
 		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
+           panic(err)
 		}
-		fmt.Println(isbn)
+		qr, err := db.Query(`select author_name,book_title from book_instance as b where book_isbn = $1;`, isbn)
+        if err != nil {
+			panic(err)
+		}
+		var bookndMem stct.BorrowInfo
+        for qr.Next() {
+            err = qr.Scan(&bookndMem.Author,&bookndMem.Title)
+            if err != nil {
+				panic(err)            
+			}
+		}
+
 		_, err = db.Query(`delete from tmp_borrow where mb_email = $1 and bk_isbn = $2;`, email, isbn)
 		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
+           panic(err)
 		}
-		qr, err := db.Query(`select book_isbn,book_title,author_name book_instances where book_isbn = $1;`, isbn)
-        if err != nil {
-           http.Error(w, err.Error(), http.StatusInternalServerError)
-        }
-        for qr.Next() {
-            err = qr.Scan(&bookndMem.ISBN, &bookndMem.Title, &bookndMem.Author)
-            if err != nil {
-               http.Error(w, err.Error(), http.StatusInternalServerError)
-            }
-		}
+
 		db.Close() 
 		subject := "BOOK ISSUING"
-		emailBody := fmt.Sprintf("You have been issued the book %s (%d) by %s.\n It is required that you return it in 2 weeks time.\n If deadline passed, you will have to pay $5 charge.\n", bookndMem.Title,bookndMem.ISBN, bookndMem.Author)
+		emailBody := fmt.Sprintf("You have been issued the book %s (%d) by %s.\n It is required that you return it in 2 weeks time.\n If deadline passed, you will have to pay $5 charge.\n", isbn,bookndMem.ISBN, bookndMem.Author)
 		_,err = gomail.SendEmail(email,emailBody, subject)
 		http.Redirect(w, r, "/sci-library/librarian/operations/issue-book", http.StatusSeeOther)
 }
@@ -114,22 +117,22 @@ func DeleteBookRequest(w http.ResponseWriter, r *http.Request) {
 
 		db, err := dbconfig.GetMySQLDb()
 		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
+           panic(err)
 		}
 		_, err = db.Query(`delete from tmp_borrow where mb_email = $1 and bk_isbn = $2;`, email, isbn)
 		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
+           panic(err)
 		}
 		qr, err := db.Query(`select book_isbn,book_title,author_name from book_instances where book_isbn = $1;`, isbn)
         if err != nil {
-           http.Error(w, err.Error(), http.StatusInternalServerError)
-        }
+			panic(err)
+		}
+		var bookndMem stct.BorrowInfo
+
         for qr.Next() {
             err = qr.Scan(&bookndMem.ISBN, &bookndMem.Title, &bookndMem.Author)
             if err != nil {
-               http.Error(w, err.Error(), http.StatusInternalServerError)
-            }
+                     panic(err)            }
 		}
 		db.Close()
 
