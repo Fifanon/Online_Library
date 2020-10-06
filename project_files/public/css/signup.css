@@ -48,24 +48,12 @@
             margin-bottom: 15px;
         }
         
-        .del {
-            position: absolute;
-            top: 0px;
-            right: 15px;
-            width: 30px;
-            height: 30px;
-            text-align: center;
-            line-height: 30px;
-            background-color: rgba(255, 255, 255, 0.6);
-            cursor: pointer;
-        }
-        
         .form-wrapper {
             position: absolute;
             width: 82%;
             left: 9%;
             right: 9%;
-            margin-top: -12em;
+            margin-top: -15em;
         }
         
         .intl-tel-input {
@@ -103,7 +91,11 @@
         }
         
         .space {
-            height: 50em;
+            height: 18em;
+        }
+        
+        .phone {
+            width: 33.2em;
         }
         
         .form-wrapper p {
@@ -119,5 +111,11 @@
             .imagePreview {
                 height: 130px;
                 width: 100%;
+            }
+            .phone {
+                width: 100%;
+            }
+            .form-wrapper {
+                margin-top: -19em;
             }
         }

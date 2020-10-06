@@ -76,6 +76,7 @@ func SuccIssueBook(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 		}
+		fmt.Println(isbn)
 		_, err = db.Query(`delete from tmp_borrow where mb_email = $1 and bk_isbn = $2;`, email, isbn)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)

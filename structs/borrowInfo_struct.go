@@ -16,7 +16,7 @@ type BorrowInfo struct {
 	Address         string
 	Status         string
 	Fine          int
-	TimeLeft      int
+	TimeLeft      float64
 	Deadline      string
 
 }

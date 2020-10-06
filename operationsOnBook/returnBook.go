@@ -97,5 +97,6 @@ func SuccReturnBook(w http.ResponseWriter, r *http.Request) {
 		}
 		stct.Msg.Done = "Done"
 		vars.Tpl.ExecuteTemplate(w, "bookReturning.html", stct.Msg)
+		stct.Msg.Done = ""
 		return
 }

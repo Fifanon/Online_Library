@@ -12,4 +12,11 @@ type Statistics struct {
 	NumOfBooks         int
 	NumOfMembers       int
 	NumOfMembOwingFine int
+	NumOfBorrElectEngBooks int
+	NumOfBorrMechEngBooks  int
+	NumOfBorrCompEngBooks  int
+	NumOfBorrMathBooks     int
+	NumOfBorrPhysicsBooks  int
+	NumOfBorrBiologyBooks  int
+	NumOfBorrBorrowedBooks int
 }

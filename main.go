@@ -38,7 +38,6 @@ func main() {
 	r.HandleFunc("/sci-library/op/member-searching", mber.ProcessMemberSearch).Methods("POST")
 
 	r.HandleFunc("/sci-library/sign-up", signUp).Methods("GET")
-	r.HandleFunc("/sci-library/sign-up/check-email", user.CheckEmail).Methods("POST")
 	r.HandleFunc("/sign-up/processing", user.UploadPhotoFile).Methods("POST")
 	r.HandleFunc("/signup/processing-continue", user.SignupProcessor)
 	r.HandleFunc("/sci-library/log-in/forgot-password", restorePwd).Methods("GET")
@@ -113,9 +112,9 @@ func signUp(w http.ResponseWriter, r *http.Request) {
 	//   var msg Msg
 	// msg.fstmsg = fileuploadmsg
 	//   msg.sndmsg = vars.Message
-	vars.Tpl.ExecuteTemplate(w, "signup.html", vars.Fileuploadmsg)
+	vars.Tpl.ExecuteTemplate(w, "signup.html", stct.Msg)
 	// vars.Message = ""
-	vars.Fileuploadmsg = ""
+	stct.Msg.Any= ""
 	return
 }
 

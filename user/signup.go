@@ -2,9 +2,7 @@ package user
 
 import (
     "fmt"
-	"encoding/json"
 	"io/ioutil"
-	"io"
 	"os"
 	"strings"
 	vars "github.com/Fifanon/online_library/varsAndFuncs"
@@ -66,6 +64,12 @@ func SignupProcessor(w http.ResponseWriter, r *http.Request) {
 //UploadPhotoFile **
 func UploadPhotoFile(w http.ResponseWriter, r *http.Request) {
 	r.ParseMultipartForm(10 << 32)
+
+	//check first if user does not exist already in DB
+	if CheckEmail(w,r,strings.Join(r.Form["email"],"")) == true {
+		return
+	}
+
 	file, handler, err := r.FormFile("imgfile")
 
 	vars.PhotoFileName = handler.Filename
@@ -87,33 +91,25 @@ func UploadPhotoFile(w http.ResponseWriter, r *http.Request) {
 	vars.Fileuploadmsg = vars.PhotoFileName
 	vars.GotFile = true
 	http.Redirect(w, r, "/signup/processing-continue", http.StatusSeeOther)
+	return
 }
 
 //CheckEmail **
-func CheckEmail(w http.ResponseWriter, r *http.Request) {
-
-	 emailjson, err := ioutil.ReadAll(r.Body)
+func CheckEmail(w http.ResponseWriter, r *http.Request, email string)(EmailExists bool) {
+	EmailExists = true
+	db, err := dbconfig.GetMySQLDb()
 	 if err != nil {
-		 http.Error(w, err.Error(), http.StatusInternalServerError)
-	 }
-	 bytes := []byte(emailjson)
-
-	 var emailSt emailStruct	
-	 
-	 json.Unmarshal(bytes, &emailSt)
-
-	 //open database
-	 db, err := dbconfig.GetMySQLDb()
-	 if err != nil {
-		 http.Error(w, err.Error(), http.StatusInternalServerError)
-	 }
-	 var email string = ""
-	 
-    qResult := db.QueryRow(`select m_email from members where m_email = $1;`, emailSt.Email)
-     qResult.Scan(&email)
+        panic(err)	
+    }
+    var checkedEmail string =  ""
+     qResult := db.QueryRow(`select m_email from members where m_email = $1;`, email)
+     qResult.Scan(&checkedEmail)
 	 db.Close()
-     w.Header().Set("Content-Type", "text/plain")
-     w.WriteHeader(http.StatusOK)
-	 _, err = io.WriteString(w, email)
-    return
+	 if checkedEmail != ""{
+		 EmailExists = true
+	    stct.Msg.Any = "user exists already."
+		vars.Tpl.ExecuteTemplate(w, "signup.html", stct.Msg)
+		stct.Msg.Any = ""
+	 }
+     return
 }

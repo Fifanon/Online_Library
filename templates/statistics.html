@@ -76,14 +76,24 @@
 
         <div class="shadow p-3 mb-5 bg-white rounded form-wrapper">
             {{range .Stat}}
-            <h5 class="mt-0 font-weight-bold mb-2">Books Statistics</h5>
+            <h5 class="mt-0 font-weight-bold mb-2">Available Books</h5>
 
-            <p>Number of Electronic Engineering books: <mark>{{.NumOfElectEngBooks}}</mark> </p>
-            <p>Number of Mechanical Engineering books: <mark>{{.NumOfMechEngBooks}}</mark></p>
-            <p>Number of Computer Engineering books: <mark>{{.NumOfCompEngBooks}}</mark></p>
-            <p>Number of Mathematics books: <mark>{{.NumOfMathBooks}}</mark></p>
-            <p>Number of physics books: <mark>{{.NumOfPhysicsBooks}}</mark></p>
-            <p>Number of Biology books: <mark>{{.NumOfBiologyBooks}}</mark></p>
+            <p>Electronic Engineering books: <mark>{{.NumOfElectEngBooks}}</mark> </p>
+            <p>Mechanical Engineering books: <mark>{{.NumOfMechEngBooks}}</mark></p>
+            <p>Computer Engineering books: <mark>{{.NumOfCompEngBooks}}</mark></p>
+            <p>Mathematics books: <mark>{{.NumOfMathBooks}}</mark></p>
+            <p>Physics books: <mark>{{.NumOfPhysicsBooks}}</mark></p>
+            <p>Biology books: <mark>{{.NumOfBiologyBooks}}</mark></p>
+            <p>Total Number of books books: <mark>{{.NumOfBooks}}</mark></p>
+
+            <h5 class="mt-0 font-weight-bold mb-2">Borrowed Books</h5>
+
+            <p>Electronic Engineering books: <mark>{{.NumOfBorrElectEngBooks}}</mark> </p>
+            <p>Mechanical Engineering books: <mark>{{.NumOfBorrMechEngBooks}}</mark></p>
+            <p>Computer Engineering books: <mark>{{.NumOfBorrCompEngBooks}}</mark></p>
+            <p>Mathematics books: <mark>{{.NumOfBorrMathBooks}}</mark></p>
+            <p>Physics books: <mark>{{.NumOfBorrPhysicsBooks}}</mark></p>
+            <p>Biology books: <mark>{{.NumOfBorrBiologyBooks}}</mark></p>
             <p>Number of books borrowed: <mark>{{.NumOfBorrowedBooks}}</mark></p>
             <p>Total Number of books books: <mark>{{.NumOfBooks}}</mark></p>
             <h5 class="mt-0 font-weight-bold mb-2">Members Statistics</h5>
@@ -93,6 +103,9 @@
             {{end}}
         </div>
     </header>
+    <div class="space" style="height: 20em;">
+
+    </div>
     <footer class="page-footer font-small ">
 
         <!-- Copyright -->

@@ -65,12 +65,12 @@ func UpdateBookprocessing(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 		}
-		qr, err := db.Query(`select book_isbn,book_title,author_name,pages,subject_area from book_instances where book_isbn = $1;`, actualIsbn)
+		qr, err := db.Query(`select book_isbn,book_title,author_name,pages,subject_area,number from book_instances where book_isbn = $1;`, actualIsbn)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 		}
 		for qr.Next() {
-			err = qr.Scan(&stct.Bk.ISBN, &stct.Bk.Title, &stct.Bk.Author, &stct.Bk.Pages, &stct.Bk.Subject)
+			err = qr.Scan(&stct.Bk.ISBN, &stct.Bk.Title, &stct.Bk.Author, &stct.Bk.Pages, &stct.Bk.Subject,&stct.Bk.Number)
 			if err != nil {
 				http.Error(w, err.Error(), http.StatusInternalServerError)
 			}
@@ -83,7 +83,7 @@ func UpdateBookprocessing(w http.ResponseWriter, r *http.Request) {
 		title := r.Form.Get("title")
 		author := r.Form.Get("authorname")
 		pages:= r.Form.Get("pages")
-
+		number := r.Form.Get("number")
 		subjectArea := r.Form.Get("subject_area")
 
         if len(isbn) == 0 {
@@ -99,6 +99,9 @@ func UpdateBookprocessing(w http.ResponseWriter, r *http.Request) {
 		if len(pages) == 0 {
 			pages = strconv.Itoa(stct.Bk.Pages)
 		}
+		if len(number) == 0 {
+			number = strconv.Itoa(stct.Bk.Number)
+		}
 		if subjectArea == "" {
 			subjectArea = stct.Bk.Subject
 		}
@@ -110,8 +113,11 @@ func UpdateBookprocessing(w http.ResponseWriter, r *http.Request) {
 		if err != nil{
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 		}
-
-		_, err = db.Query(`update book_instances set book_isbn = $1,book_title = $2,author_name = $3,pages = $4,subject_area = $5 where book_isbn = $6;`, newIsbn, title, author, numOfpages, subjectArea, actualIsbn)
+		numOfbk, err := strconv.Atoi(number)
+		if err != nil{
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+		}
+		_, err = db.Query(`update book_instances set book_isbn = $1,book_title = $2,author_name = $3,pages = $4,subject_area = $5,number = $6 where book_isbn = $7;`, newIsbn, title, author, numOfpages, subjectArea,numOfbk, actualIsbn)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
