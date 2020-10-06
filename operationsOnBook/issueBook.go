@@ -68,12 +68,8 @@ func SuccIssueBook(w http.ResponseWriter, r *http.Request) {
 		if err != nil { 
            panic(err)
 		}
-		temp, err := db.Prepare(`insert into books_borrowed (isbn,member_email,fine,bowd_time,deadline)
-              values($1,$2,$3,NOW(),$4);`)
-		if err != nil {
-           panic(err)
-		}
-		_, err = temp.Exec(&isbn, &email, &fine, &deadline)
+		_, err = db.Exec(`insert into books_borrowed (isbn,member_email,fine,bowd_time,deadline)
+              values($1,$2,$3,NOW(),$4);`,isbn,email,fine,deadline)
 		if err != nil {
            panic(err)
 		}
