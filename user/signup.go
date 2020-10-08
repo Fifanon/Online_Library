@@ -1,7 +1,6 @@
 package user
 
 import (
-    "fmt"
 	"io/ioutil"
 	"os"
 	"strings"
