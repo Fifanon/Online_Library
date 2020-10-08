@@ -5,6 +5,7 @@ import (
 	"io/ioutil"
 	"os"
 	"strings"
+	"fmt"
 	vars "github.com/Fifanon/online_library/varsAndFuncs"
 	gomail "github.com/Fifanon/online_library/gomail"
 	stct "github.com/Fifanon/online_library/structs"
@@ -69,7 +70,7 @@ func UploadPhotoFile(w http.ResponseWriter, r *http.Request) {
 	if CheckEmail(w,r,strings.Join(r.Form["email"],"")) == true {
 		return
 	}
-
+	fmt.Println("came here")
 	file, handler, err := r.FormFile("imgfile")
 
 	vars.PhotoFileName = handler.Filename
