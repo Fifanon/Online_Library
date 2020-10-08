@@ -96,7 +96,7 @@ func UploadPhotoFile(w http.ResponseWriter, r *http.Request) {
 
 //CheckEmail **
 func CheckEmail(w http.ResponseWriter, r *http.Request, email string)(EmailExists bool) {
-	EmailExists = true
+	EmailExists = false
 	db, err := dbconfig.GetMySQLDb()
 	 if err != nil {
         panic(err)	
