@@ -54,9 +54,6 @@ func SignupProcessor(w http.ResponseWriter, r *http.Request) {
 	subject := "NEW MEMBER TO ADD"
 	emailBody := fmt.Sprintf("New member to requesting registration.")
 	_, err = gomail.SendEmail(stct.User.Email,emailBody, subject)
-	if err != nil{
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-	}
 	vars.Tpl.ExecuteTemplate(w, "signupSucc.html", stct.User)
 	return
 }
@@ -69,7 +66,6 @@ func UploadPhotoFile(w http.ResponseWriter, r *http.Request) {
 	if CheckEmail(w,r,strings.Join(r.Form["email"],"")) == true {
 		return
 	}
-	fmt.Println("came here")
 	file, handler, err := r.FormFile("imgfile")
 
 	vars.PhotoFileName = handler.Filename
