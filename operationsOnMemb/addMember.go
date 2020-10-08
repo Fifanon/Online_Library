@@ -40,7 +40,7 @@ func AddMember(w http.ResponseWriter, r *http.Request) {
 			vars.Tpl.ExecuteTemplate(w, "NoData.html", "NO MEMBER TO ADD")
 			return
 		}
-		vars.Tpl.ExecuteTemplate(w, "memberAdd.html", tmpMembers)
+	        http.Redirect(w, r, "/sci-library/librarian/operations/add-member", http.StatusSeeOther)
 		return
 }
 
@@ -94,6 +94,7 @@ func AddMembervalidate(w http.ResponseWriter, r *http.Request) {
 		subject := "REGISTRATION CONFIRMATION"
 		emailBody := fmt.Sprintf("Your registration at sci-library has been approved. click on the link below to login and get access to our great ressources.\n https://stormy-river-99671.herokuapp.com/home \n\n Regards.")
 		_, err = gomail.SendEmail(stct.User.Email,emailBody, subject)
+	        http.Redirect(w, r, "/sci-library/librarian/operations/add-member", http.StatusSeeOther)
 		vars.Tpl.ExecuteTemplate(w, "memberAdd.html", tmpMembers)
 		return
 }
