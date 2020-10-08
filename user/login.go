@@ -29,13 +29,11 @@ func LoginProcessor (w http.ResponseWriter, r *http.Request) {
 		qResult := db.QueryRow(`select m_email,m_password from members where m_email = $1`, r.Form.Get("email"))
 		err = qResult.Scan(&stct.User.Email, &stct.User.Password)
 		if err != nil{
-			http.Error(w, err.Error(), http.StatusInternalServerError)
 		}
 	} else {
 		qResult := db.QueryRow(`select l_email,l_password from librarian where l_email = $1`, r.Form.Get("email"))
 		err = qResult.Scan(&stct.User.Email, &stct.User.Password)
 		if err != nil{
-			http.Error(w, err.Error(), http.StatusInternalServerError)
 		}
 	}
 	db.Close()
