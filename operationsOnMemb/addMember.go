@@ -40,7 +40,7 @@ func AddMember(w http.ResponseWriter, r *http.Request) {
 			vars.Tpl.ExecuteTemplate(w, "NoData.html", "NO MEMBER TO ADD")
 			return
 		}
-	        http.Redirect(w, r, "/sci-library/librarian/operations/add-member", http.StatusSeeOther)
+		vars.Tpl.ExecuteTemplate(w, "memberAdd.html", tmpMembers)
 		return
 }
 
